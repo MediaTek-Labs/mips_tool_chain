@@ -1521,8 +1521,12 @@ function build_component() {
 		T=( "${T[@]}" "--python=$hostlibs/bin/python" )
 	    elif [ -f $prefix/python-root/bin/python ]; then
 		T=( "${T[@]}" "--python=$prefix/python-root/bin/python" )
-	    else
+	    elif [ -f /mips/tools/sweng/freeware/python/2.7.13/Linux/bin/python ]; then
 		T=( "${T[@]}" "--python=/mips/tools/sweng/freeware/python/2.7.13/Linux/bin/python" )
+	    elif [ -f /mtkoss/python/2.7.10-rhel-6.3/x86_64/bin/python ]; then
+		T=( "${T[@]}" "--python=/mtkoss/python/2.7.10-rhel-6.3/x86_64/bin/python" )
+            else
+                : None found -- try default python instead.
 	    fi
 	    T=( `check_qemu_configure "$CONFIGURE" "${T[@]}"` )
 	    if [ "x$hostlibs" != "x" ]; then
