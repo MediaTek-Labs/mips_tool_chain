@@ -338,9 +338,7 @@ function check_src() {
 	mkdir -p $src_dir
     fi
 
-    tmpp1=`expr substr "$src" 1 4`
-    tmpp2=`expr substr "$src" 1 5`
-    if [ "$tmpp1" = "ftp:" -o "$tmpp2" = "http:" ] ; then
+    if ! [[ $src =~ .*\.git ]] ; then
       b=`basename $src`
       if [ ! -f $src_dir/$b ] ; then
 	(cd $src_dir; wget -t 10 -nv $src)
