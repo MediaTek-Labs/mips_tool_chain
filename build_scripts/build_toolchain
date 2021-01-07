@@ -338,13 +338,15 @@ function check_src() {
 	mkdir -p $src_dir
     fi
 
-    if ! [[ $src =~ .*\.git ]] ; then
-      b=`basename $src`
-      if [ ! -f $src_dir/$b ] ; then
-	(cd $src_dir; wget -t 10 -nv $src)
-      fi
-      src=$src_dir/$b
-    fi
+    if [ ! -e $src ]; then
+	if ! [[ $src =~ .*\.git ]] ; then
+	    b=`basename $src`
+	    if [ ! -f $src_dir/$b ] ; then
+		(cd $src_dir; wget -t 10 -nv $src)
+	    fi
+	    src=$src_dir/$b
+	fi
+     fi
 
     if [ "$src" = "" ] ; then
 	echo "Error: You must specify a $name source tree"
