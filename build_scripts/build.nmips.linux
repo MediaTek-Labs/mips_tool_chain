@@ -1,4 +1,4 @@
-# This script uses the build script to create a glibc based linux cross
+# This script uses the build script to create a musl-libc based linux cross
 # GCC package.  Set TOPDIR and TARGET before running.  TOPDIR should be
 # The directory where you want to build everything (it will contain subdirs
 # for sources, objects, etc) and TARGET should be nanomips-linux-musl.
@@ -64,6 +64,10 @@ BUILDPATH="$BUILDINSTALL/bin:${BUILDPATH}"
 cd $TOPDIR
 
 G=(--path=$BUILDPATH --git_home=$GITHOME --jobs=${JOBS:-8})
+G+=( --branch=gcc:mtk/gcc6 --branch=binutils:mtk/binutils_v9 --branch=gold:mtk/gold_v7 )
+G+=( --branch=musl:mtk/musl_v4 --branch=packages:mtk/packages  )
+G+=( --branch=python:mtk/2_7_16/master --branch=gdb:mtk/gdb8_v3 --branch=gnutools-qemu:mtk/qemu_v3 )
+G+=( --branch=dejangu:mtk/dejagnu )
 BUILDG=("${G[@]}" --build=$BUILDOBJ --prefix=$BUILDINSTALL)
 G+=($HOSTOPTIONS --buildlibs=$BUILDINSTALL --hostlibs=$HOSTINSTALL)
 HOSTG=("${G[@]}" --build=$HOSTOBJ --prefix=$HOSTINSTALL)
@@ -71,11 +75,15 @@ G+=(--build=$OBJ --with-pkgversion="$TOOLSVERSION")
 PYTHONG=("${G[@]}" --prefix=$INSTALL/python-root "${PYTHONG[@]}")
 G+=(--build=$OBJ --prefix=$INSTALL --target=$TARGET --sysroot=$SYSROOT)
 
+# Starting from an empty source directory, to checkout all required sources for
+# the contemporary toolchain release
+b/build_toolchain update "${G[@]}" packages musl
+
 # If you want to force an update of your sources before the build.
 # uncommment the next line.
 # b/build_toolchain update "${G[@]}" texinfo
 # b/build_toolchain update "${G[@]}" termcap ncurses expat
-# b/build_toolchain update "${G[@]}" binutils gdb glibc gcc qemu
+# b/build_toolchain update "${G[@]}" binutils gdb glibc gcc musl
 # b/build_toolchain update "${G[@]}" zlib pixman libffi glib qemu
 
 # If you do not want to use the system gmp, mpfr or mpc
