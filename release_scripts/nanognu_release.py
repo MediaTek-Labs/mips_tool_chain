@@ -167,15 +167,23 @@ if True:
 
   templatedir = os.path.join (scriptpath, "nanotemplate")
   print("Copy release website from %s" % templatedir)
-  f = open(os.path.join (rel_path, "tag", "nanoMIPS-%s.md" % version), 'w')
-  ret=subprocess.call(["tail", "-n", "+2", os.path.join(templatedir, "github.md")],
-                      stdout=f)
-  f.close()
-
+  html = os.path.join (rel_path, "tag", "nanoMIPS-%s" % version)
+  md = os.path.join(templatedir, "github.md")
   ret=subprocess.call (["pandoc", "-f", "markdown+raw_html",
                         "-t", "html",
-                        "-o", os.path.join (rel_path, "tag", "nanoMIPS-%s" % version),
-                        os.path.join(templatedir, "github.md")])
+                        "-o", html,
+                        md])
+
+  f = open(md, mode='r')
+  content = f.read()
+  f.close()
+  content = content.replace("mtklogo.svg","https://cdn-www.mediatek.com/icons/mtklogo.svg")
+  content = content.replace("http://172.21.160.85/swits",
+                            "https:/github.com/MediaTek-Labs/nanomips-gnu-toolchain/issues")
+  f = open(md, mode='w')
+  f.write(content)
+  f.close()
+  shutil.copyfile(md, os.path.join (rel_path, "tag", "nanoMIPS-%s.md" % version))
 
   print("Fix ownership & permissions")
   if os.stat(os.getcwd()).st_uid != os.getuid():
