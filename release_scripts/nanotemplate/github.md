@@ -112,7 +112,7 @@ multi-threaded context, but is otherwise transparent to users.
 
 ## Bug Reporting
 
-Report bugs for MediaTek's nanoMIPS GNU toolchain, **[here](https:/github.com/MediaTek-Labs/nanomips-gnu-toolchain/issues)**.
+Report bugs for MediaTek's nanoMIPS GNU toolchain, **[here](https://github.com/MediaTek-Labs/nanomips-gnu-toolchain/issues)**.
 
 For reporting issues that are not target-specific, please see instructions provided within the source files of the concerned component.
 
