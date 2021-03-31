@@ -107,7 +107,7 @@ chmod +x $SRCDIR/gcc/contrib/test_installed.libstdc++"$$"
 if [ $DO = "libstdc++" -o $DO = "all" ]; then
 for cfg in "${configs[@]}"; do
     name="libstdcxx_"`echo ${cfg#*/} | tr -d - | tr -d =  | tr / _`
-    
+
     mkdir $name
     pushd $name
     rm -Rf *
@@ -117,7 +117,36 @@ for cfg in "${configs[@]}"; do
 done
 fi
 
+configs=(
+    "mips-sim-mti32/-m32/-EL/-msoft-float"
+    "mips-sim-mti32/-m32/-EL/-msoft-float/-mclib=tiny"
+    "mips-sim-mti32/-m32/-EL/-msoft-float/-mclib=small"
+)
+
+
+# When running outside of build tree, including the provided flags.exp messes include paths and causes spurious failures.
+# Discretely pre-empting the provided flags.exp with an empty version seems to avoid the problem.
+mkdir lib
+touch lib/flags.exp
+
+# manipulate the previously generated test_installed.g++ script to generate a modified site.exp
+sed 's|^set srcdir.*$|set srcdir \"'$SRCDIR'/gcc/newlib/testsuite\"\nset CFLAGS_FOR_TARGET \"-I'$TOOLCHAIN'/nanomips-elf/include\"|' $SRCDIR/gcc/contrib/test_installed > $SRCDIR/gcc/contrib/test_installed.newlib"$$" 
+sed -i 's|^exit 0$|runtest --tool newlib ${1+"$@"}\nexit 0|g' $SRCDIR/gcc/contrib/test_installed.newlib"$$"
+chmod +x $SRCDIR/gcc/contrib/test_installed.newlib"$$"
+if [ $DO = "newlib" -o $DO = "all" ]; then
+for cfg in "${configs[@]}"; do
+    name="newlib_"`echo ${cfg#*/} | tr -d - | tr -d =  | tr / _`
+
+    mkdir $name
+    pushd $name
+    rm -Rf *
+    # Needed for header-check in newlib.locale/UTF-8 test
+    ln -s $TOOLCHAIN/nanomips-elf/include targ-include
+    PATH=$TOOLCHAIN/bin:$HOSTTOOLS/bin:$SRCDIR/dejagnu:$PATH $SRCDIR/gcc/contrib/test_installed.newlib"$$" --without-gfortran --without-objc --without-gcc --without-g++ --prefix=$TOOLCHAIN --target=nanomips-elf --target_board=$cfg SIM=$TOOLCHAIN/bin/nanomips-elf-run -v -v -v  $4 &> test.log &
+    popd
+done
+fi
 
 wait
 # cleanup
-rm -f $SRCDIR/gcc/contrib/test_installed.gcc"$$" $SRCDIR/gcc/contrib/test_installed.g++"$$" $SRCDIR/gcc/contrib/test_installed.libstdc++"$$"
+rm -f $SRCDIR/gcc/contrib/test_installed.gcc"$$" $SRCDIR/gcc/contrib/test_installed.g++"$$" $SRCDIR/gcc/contrib/test_installed.libstdc++"$$" $SRCDIR/gcc/contrib/test_installed.newlib"$$"
