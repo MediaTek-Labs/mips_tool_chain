@@ -219,6 +219,35 @@ if True:
 #       subprocess.call (["chmod", "-R", "g+w,o-w", os.path.join(mipsswinst_path, 'nanomips-linux-musl', version)])
 #   else:
 #     print("No write permissions on %s, not installing x86_64 toolchains" % mipsswinst_path)
+  for target in ["nanomips-elf", "nanomips-linux-musl"]:
+    install_path=os.path.join("/mtkoss", "Thor", "gcc-%s" % target.split('-')[1])
+    tarball=os.path.join(rel_path, "download", "nanoMIPS-%s" % version,
+                         "MediaTek.GNU.Tools.%s.for.nanoMIPS.%s.%s.tar.gz"
+                         % (version, target_to_name[target], host_to_name["x86_64-pc-linux-gnu"]))
+    extractcmd = ["ssh", "srv_tcbuild001@localhost", "tar", "-x", "-C",
+                  install_path, "--strip-components=1", "-f", tarball]
+    print (extractcmd)
+    ret=subprocess.call(extractcmd)
+    if ret != 0:
+      print ("ERROR: Failed to deploy %s toolchain to %s" % (target_to_name[target], install_path))
+      break
+    else:
+      print ("Deployed %s toolchain to %s" % (target_to_name[target], install_path))
+    
+    rootmodule=os.path.join("/mtkoss", "Thor", "gcc-elf", "2019.03-07", "2019.03-07")
+    versionmodule=os.path.join("/mtkoss", "Thor", "gcc-%s" % target.split('-')[1], version, version)
+    extractcmd = ["ssh", "srv_tcbuild001@localhost", "cp", rootmodule, versionmodule]
+    ret=subprocess.call(extractcmd)
+#    shutil.copyfile(rootmodule, versionmodule)
+    linkpath=os.path.join("/mtkoss", "Modules", "3.2.6", "x86_64", "modulefiles", "Thor",
+        "gcc-%s" % target.split('-')[1])
+    linktarget=os.path.join("..", "..", "..", "..", "..", "..", "Thor",
+        "gcc-%s" % target.split('-')[1], version, version)
+    extractcmd = ["ssh", "srv_tcbuild001@localhost", "ln", "-t", linkpath, "-s", linktarget, version]
+    print (extractcmd)
+    ret=subprocess.call(extractcmd)
+#    os.symlink (linktarget, linkpath)
+    print ("%s -> %s" % (os.path.join(linkpath, version), linktarget))
 
   print("Adding website changes to git")
   ret=subprocess.call(["git", "add", os.path.join("nanotemplate", "github.md")], cwd = scriptpath)
