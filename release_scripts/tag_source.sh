@@ -9,6 +9,7 @@ testid_linux=0
 dry_run=0
 clear=0
 verify=0
+githome=https://gerrit.mediatek.inc/MD-SHAOLIN/MIPS
 
 while true ; do
     case $1 in
@@ -66,12 +67,12 @@ fi
 
 if [ ! -d $rootdir/overtest ]; then
     echo "Checking out overtest"
-    git clone ssh://gitosis@dmz-portal.mipstec.com/sec/overtest $rootdir/overtest
+    git clone -b mtk/master $githome/overtest $rootdir/overtest
 fi
 
 if [ ! -d $rootdir/mips_tool_chain ]; then
     echo "Checking out mips_tool_chain"
-    git clone ssh://git@github.com/MIPS/mips_tool_chain $rootdir/mips_tool_chain
+    git clone -b mtk/master  $githome/mips_tool_chain $rootdir/mips_tool_chain
 fi
 
 python $rootdir/overtest/overtest.py --export --schema=testrun -i $testid > /dev/null
@@ -126,10 +127,10 @@ for p in $packages; do
 
     if [ -d $p/.git ]; then
 	# repo already cloned
-	if [ -z "`grep -e ssh:\/\/git@ $rootdir/$p/.git/config`" ]; then
-	    echo "$rootdir/$p checked out from read-only repository"
-	    exit 1
-	fi
+	# if [ -z "`grep -e ssh:\/\/git@ $rootdir/$p/.git/config`" ]; then
+	#     echo "$rootdir/$p checked out from read-only repository"
+	#     exit 1
+	# fi
 	pushd $p
 	git fetch origin $branch
 	if [ $? -ne 0 ]; then
@@ -149,7 +150,7 @@ done
 if [ $arch == "nanomips" ]; then
     packages="$packages toolchain_docs"
     if [ ! -d $rootdir/toolchain_docs/.git ]; then
-	git clone -b master ssh://git@github.com/MIPS/toolchain_docs
+	git clone -b mtk/master $githome/toolchain_docs
 	if [ ! -d $rootdir/toolchain_docs/.git ]; then
 	    echo "Failed to checkout toolchain_docs"
 	    exit 1
