@@ -78,7 +78,7 @@ if True:
 
   for target in ["nanomips-elf", "nanomips-linux-musl"]:
     binaries=""
-    for host in ["i686-pc-linux-gnu", "i686-w64-mingw32", "x86_64-pc-linux-gnu", "x86_64-w64-mingw32"]:
+    for host in ["x86_64-pc-linux-gnu", "x86_64-w64-mingw32", "i686-pc-linux-gnu", "i686-w64-mingw32"]:
       filename = "MediaTek.GNU.Tools.%s.for.nanoMIPS.%s.%s.tar.gz" % (version, target_to_name[target], host_to_name[host])
       os.rename("%s_%s.tgz" % (target, host), filename)
       varsuffix = "%s %s" % (host_to_var[host], target_to_var[target])
