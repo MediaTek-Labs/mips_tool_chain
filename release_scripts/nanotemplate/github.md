@@ -1,5 +1,5 @@
-# [![MTK Logo](https://cdn-www.mediatek.com/icons/mtklogo.svg)](https://www.mediatek.com) &nbsp;&nbsp; nanoMIPS GNU toolchain v2021.04-01
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Published on April 30, 2021
+# [![MTK Logo](https://cdn-www.mediatek.com/icons/mtklogo.svg)](https://www.mediatek.com) &nbsp;&nbsp; nanoMIPS GNU toolchain v2021.04-02
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Published on May 02, 2021
 
 * [Introduction](#introduction)
 * [Release Notes](#release-notes)
@@ -78,30 +78,30 @@ The nanoMIPS Toolchain includes example code, source code, and documentation to 
 |Variant  |Size|Checksum|
 |:--------|:---|:-------|
 |**Bare Metal Toolchain**|||
-|[Linux x86](../../releases/download/nanoMIPS-2021.04-01/MediaTek.GNU.Tools.2021.04-01.for.nanoMIPS.Bare.Metal.CentOS-6.x86.tar.gz) (.tar.gz)|[120M]|md5: 9b3d21c1d93e1a98c05cd20c6268c94f<br/>sha256: 733c35770377bef07843120439c7348041ccbcfcba741c32823cb0851b3e7423|
-|[Windows x86](../../releases/download/nanoMIPS-2021.04-01/MediaTek.GNU.Tools.2021.04-01.for.nanoMIPS.Bare.Metal.Windows.x86.tar.gz) (.tar.gz)|[90M]|md5: 37628af41bb8ab4fabd1f09d8b6dcde7<br/>sha256: 714ebe6dbd345a4c3e6f2a08d5cafbfa435c7508c70b01d5fae3e449149d80b8|
-|[Linux x64](../../releases/download/nanoMIPS-2021.04-01/MediaTek.GNU.Tools.2021.04-01.for.nanoMIPS.Bare.Metal.CentOS-6.x86_64.tar.gz) (.tar.gz)|[118M]|md5: 14dcc60c3d2fcbc780881fd43c39c1c8<br/>sha256: ac164c0a660814b7ab1e5d6a1f0499ee15485db7ffb97bfd12a0f6c3b587a214|
-|[Windows 64](../../releases/download/nanoMIPS-2021.04-01/MediaTek.GNU.Tools.2021.04-01.for.nanoMIPS.Bare.Metal.Windows.x86_64.tar.gz) (.tar.gz)|[93M]|md5: 0c8863bc5202e69ac93bf785d8ffc8b0<br/>sha256: 8685ad8c2955b49971185ce051f8b399592c8abb4e856a4e187c8de97b8014ef|
+|[Linux x86](../../releases/download/nanoMIPS-2021.04-02/MediaTek.GNU.Tools.2021.04-02.for.nanoMIPS.Bare.Metal.CentOS-6.x86.tar.gz) (.tar.gz)|[120M]|md5: c433d6d6fd706a676704015782b96a34<br/>sha256: 16db411b19f3723575363f47c8d86b85041527c18208aa30c98beb4b0b99a097|
+|[Windows x86](../../releases/download/nanoMIPS-2021.04-02/MediaTek.GNU.Tools.2021.04-02.for.nanoMIPS.Bare.Metal.Windows.x86.tar.gz) (.tar.gz)|[90M]|md5: 7272a91c1a2440151e02d8f89a77a99d<br/>sha256: 13234e85084e9efc9ad877e49aebaac20c7c2376e9c07304179c88e17058b6c7|
+|[Linux x64](../../releases/download/nanoMIPS-2021.04-02/MediaTek.GNU.Tools.2021.04-02.for.nanoMIPS.Bare.Metal.CentOS-6.x86_64.tar.gz) (.tar.gz)|[118M]|md5: a7da08cafbf38356ff63d8902bda4c47<br/>sha256: 491fd7070b64db6b88a40e6df6ee301eb44709cc5b9b5d1ad2168da3d82ae520|
+|[Windows 64](../../releases/download/nanoMIPS-2021.04-02/MediaTek.GNU.Tools.2021.04-02.for.nanoMIPS.Bare.Metal.Windows.x86_64.tar.gz) (.tar.gz)|[93M]|md5: 194bbca8f1cadb3c009cd46ca9e646f5<br/>sha256: 4b0b2f5a767da9023b5df41a262a762c3c9532354aef051f599d8af6861085c5|
  |**MUSL/Linux Toolchain**|||
-|[Linux x86](../../releases/download/nanoMIPS-2021.04-01/MediaTek.GNU.Tools.2021.04-01.for.nanoMIPS.Linux.CentOS-6.x86.tar.gz) (.tar.gz)|[130M]|md5: 03fcfdbd23bf28ca48d875860db88534<br/>sha256: 2ef6706d935f52346565285920738b09b8100f6bc0ea9c9d9fb1269fc20913a4|
-|[Windows x86](../../releases/download/nanoMIPS-2021.04-01/MediaTek.GNU.Tools.2021.04-01.for.nanoMIPS.Linux.Windows.x86.tar.gz) (.tar.gz)|[106M]|md5: 39cedbb5a85d1a6ef04470e2b7e52350<br/>sha256: 0c05db1b44ed79736ab1c8650f233d0f9dea0ae69338e844042f1078dd3a09df|
-|[Linux x64](../../releases/download/nanoMIPS-2021.04-01/MediaTek.GNU.Tools.2021.04-01.for.nanoMIPS.Linux.CentOS-6.x86_64.tar.gz) (.tar.gz)|[129M]|md5: cc757b3e6dfca46861c550dfdc424bea<br/>sha256: 4d8e6e703a2608ccdce49f60ba8a937607b75f9fcf84be640447ea25f15d5633|
-|[Windows 64](../../releases/download/nanoMIPS-2021.04-01/MediaTek.GNU.Tools.2021.04-01.for.nanoMIPS.Linux.Windows.x86_64.tar.gz) (.tar.gz)|[109M]|md5: cdde83144e8362c9a5fa347acc64a5a3<br/>sha256: afe80c2cd86584b3cef63d76382b362aeca8f6902a31cd80298570c59eea93ac|
+|[Linux x86](../../releases/download/nanoMIPS-2021.04-02/MediaTek.GNU.Tools.2021.04-02.for.nanoMIPS.Linux.CentOS-6.x86.tar.gz) (.tar.gz)|[130M]|md5: 079256f03d1f78097b4110017484996e<br/>sha256: 2d1462a70df614766c24f666871cb050614e07c50a38502783868a9d8d32e46a|
+|[Windows x86](../../releases/download/nanoMIPS-2021.04-02/MediaTek.GNU.Tools.2021.04-02.for.nanoMIPS.Linux.Windows.x86.tar.gz) (.tar.gz)|[106M]|md5: 0df373185874a2d95ec89b059766034a<br/>sha256: d2d65b5c9da3de95caa1cd3d007357186335ff74128f39342812b931e7fce7b2|
+|[Linux x64](../../releases/download/nanoMIPS-2021.04-02/MediaTek.GNU.Tools.2021.04-02.for.nanoMIPS.Linux.CentOS-6.x86_64.tar.gz) (.tar.gz)|[129M]|md5: a6763a27c133b17b21ff60a343e6afd8<br/>sha256: d32747bbaf5ed667afd34f9d54a08a0260b529e82c34ce4fba20390bdcd76610|
+|[Windows 64](../../releases/download/nanoMIPS-2021.04-02/MediaTek.GNU.Tools.2021.04-02.for.nanoMIPS.Linux.Windows.x86_64.tar.gz) (.tar.gz)|[109M]|md5: 68cc3b826400a4aadd1a4b3bc6295099<br/>sha256: ddfd157c3a6b99ca702616487e0542deae4a356f7758f1ee61290f034dcb8c8c|
 
 
 #### Source Components
 |Component|Size|Checksum|
 |:--------|:---|:-------|
-|[binutils-2021.04-01.src.tar.gz](../../releases/download/nanoMIPS-2021.04-01/binutils-2021.04-01.src.tar.gz)|[51M]|md5: 727a95e35352084ff623d7d2dcf38613<br/>sha256: 352d5ae45e8a808716a1270540fb891d90657181411e85b417a0c16a2df922d5|
-|[gdb-2021.04-01.src.tar.gz](../../releases/download/nanoMIPS-2021.04-01/gdb-2021.04-01.src.tar.gz)|[51M]|md5: 7b844ff5cea3837d55a9e4dc11264db7<br/>sha256: ca736d4d5b436bb81d1c30f61aafd775b1edfff44663414abb00ffdc3449f54c|
-|[gold-2021.04-01.src.tar.gz](../../releases/download/nanoMIPS-2021.04-01/gold-2021.04-01.src.tar.gz)|[52M]|md5: 3530007f429349dc369405f0fb050bb2<br/>sha256: 321ffa51307a2c0b844d1b736a87d2cdb6f98828e596ed3691fbe14653ced2c9|
-|[newlib-2021.04-01.src.tar.gz](../../releases/download/nanoMIPS-2021.04-01/newlib-2021.04-01.src.tar.gz)|[19M]|md5: ec056564b50caf18480d0582f38f35f3<br/>sha256: bd0192da387ea729ab90eb2962fe02c6d6eef0c959d65bd9ebf55000ecaec2a2|
-|[gcc-2021.04-01.src.tar.gz](../../releases/download/nanoMIPS-2021.04-01/gcc-2021.04-01.src.tar.gz)|[112M]|md5: b0419a38d6ef1636b78726dee24f1655<br/>sha256: 999767c8a197a5d3ee5af0cf5e396b12421bea1e84fcae358c9a1b712204379c|
-|[smallclib-2021.04-01.src.tar.gz](../../releases/download/nanoMIPS-2021.04-01/smallclib-2021.04-01.src.tar.gz)|[1M]|md5: fb547aba35a18ed444a3ef6777820a01<br/>sha256: abda1de99c4953dc0000a68114f568f54e7ce1d615dcaa1c4693c96ba82e333f|
-|[qemu-2021.04-01.src.tar.gz](../../releases/download/nanoMIPS-2021.04-01/qemu-2021.04-01.src.tar.gz)|[11M]|md5: 9dce2d4762b5286a0482f918e4fd62ab<br/>sha256: 93af5f3bf2c6e4876ed79b844a9d5d84edb03f9e73436b7e656d1a100b513375|
-|[musl-2021.04-01.src.tar.gz](../../releases/download/nanoMIPS-2021.04-01/musl-2021.04-01.src.tar.gz)|[1M]|md5: 934576f49ecb82d83e661ba595b400c3<br/>sha256: a37b8ec507b07cb8399a716de7d7b72978a8caba799804921ebee840cd8bedff|
-|[packages-2021.04-01.src.tar.gz](../../releases/download/nanoMIPS-2021.04-01/packages-2021.04-01.src.tar.gz)|[189M]|md5: 5b8599cb7dfb2dd578d4862963c71fca<br/>sha256: fdf438ece3e17f5863931d820c54537b8d24f4b206e60eb548da20c3f10d50f4|
-|[python-2021.04-01.src.tar.gz](../../releases/download/nanoMIPS-2021.04-01/python-2021.04-01.src.tar.gz)|[16M]|md5: 5ed2941dbabddd85c286107210530133<br/>sha256: fde02f3899dac8cb7d579c9cb8bd84c181b5c230c41b3786812082d6b74cd59e|
+|[binutils-2021.04-02.src.tar.gz](../../releases/download/nanoMIPS-2021.04-02/binutils-2021.04-02.src.tar.gz)|[51M]|md5: 68124df44b640c5ea9d19157ce401642<br/>sha256: 530672c1e5081b4027c5baac65e40c6cc64ee6da24aa2bb8b178ede0ba7f0b42|
+|[gdb-2021.04-02.src.tar.gz](../../releases/download/nanoMIPS-2021.04-02/gdb-2021.04-02.src.tar.gz)|[51M]|md5: e753ced58166410ccaef19b0f5d0090f<br/>sha256: c52b9e2d133a4bef01da6ef233de685598a0c979430eb65907489bd71d54c5cb|
+|[gold-2021.04-02.src.tar.gz](../../releases/download/nanoMIPS-2021.04-02/gold-2021.04-02.src.tar.gz)|[52M]|md5: d52184b77bb73d4470ca05a10d94d552<br/>sha256: 2e16c5f6200aaafbf799c1ea6bb5a7afbea88ecd60ecc4e2bdfc031d376a16f7|
+|[newlib-2021.04-02.src.tar.gz](../../releases/download/nanoMIPS-2021.04-02/newlib-2021.04-02.src.tar.gz)|[19M]|md5: 8df4ff4f734c7a01a554cee5be9486d1<br/>sha256: 3aefca89b7d8c44cd7227afcb64d452ec3a1724a08d477caf6a3d7fb43e16ee5|
+|[gcc-2021.04-02.src.tar.gz](../../releases/download/nanoMIPS-2021.04-02/gcc-2021.04-02.src.tar.gz)|[112M]|md5: d0a0708e608f102417263ba872d817dd<br/>sha256: fa3ed019bcad037f3ed7a70f0226fcbc1441b7287fdb8646e939a433a23749da|
+|[smallclib-2021.04-02.src.tar.gz](../../releases/download/nanoMIPS-2021.04-02/smallclib-2021.04-02.src.tar.gz)|[1M]|md5: 5d522e398b4b1d6a5a51dfb57aca2495<br/>sha256: 4e6fd3277cae189d223fa188433cfe1aba8612df39466158ca0aa58da7d44ef3|
+|[qemu-2021.04-02.src.tar.gz](../../releases/download/nanoMIPS-2021.04-02/qemu-2021.04-02.src.tar.gz)|[11M]|md5: a10f5164fd59bcb2f5afb5965c9bfb93<br/>sha256: b0b733f5403e608ea2fcfe9b6dc1de8542f2065f3105cf9faf2fa85f783b7092|
+|[musl-2021.04-02.src.tar.gz](../../releases/download/nanoMIPS-2021.04-02/musl-2021.04-02.src.tar.gz)|[1M]|md5: 8f3384e434492c0e3dfa76c6b55bec6e<br/>sha256: e609148e052c1f6f559f6f32cce88b2d3fd7a3a763a25b20ef17a9d2166793d7|
+|[packages-2021.04-02.src.tar.gz](../../releases/download/nanoMIPS-2021.04-02/packages-2021.04-02.src.tar.gz)|[189M]|md5: 12b34bc4cd4489409fad10d46da776f4<br/>sha256: c80e2239cb586de0e47894a92ad47c73f07d32548dd27ecbd25206e08c965f39|
+|[python-2021.04-02.src.tar.gz](../../releases/download/nanoMIPS-2021.04-02/python-2021.04-02.src.tar.gz)|[16M]|md5: 75c71facc3c9f9c5a51f1e0da11d6762<br/>sha256: 7389c954cab2d3d460caf917af19550d89439416f592cd4b2ac2c798aaee7dba|
 
 
 <div id="bug-reporting"></div>
