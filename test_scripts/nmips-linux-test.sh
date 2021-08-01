@@ -50,6 +50,7 @@ jobs=""
 # manipulate the test_installed script to generate a modified site.exp
 sed 's|^set CFLAGS.*$|set CFLAGS \"\"\nset HOSTCC \"gcc\"\nset HOSTCFLAGS \"\"|' $SRCDIR/gcc/contrib/test_installed > $SRCDIR/gcc/contrib/test_installed.gcc"$$"
 chmod +x $SRCDIR/gcc/contrib/test_installed.gcc"$$"
+touch $SRCDIR/gcc/gcc/testsuite/gcc.dg/cpp/_Pragma3.c
 
 if [ $DO = "gcc" -o $DO = "both" -o $DO = "all" ]; then
 for cfg in "${configs[@]}"; do
