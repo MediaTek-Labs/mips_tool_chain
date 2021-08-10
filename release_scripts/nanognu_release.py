@@ -236,18 +236,29 @@ if True:
     
     rootmodule=os.path.join("/mtkoss", "Thor", "gcc-elf", "2019.03-07", "2019.03-07")
     versionmodule=os.path.join("/mtkoss", "Thor", "gcc-%s" % target.split('-')[1], version, version)
-    extractcmd = ["ssh", "srv_tcbuild001@localhost", "cp", rootmodule, versionmodule]
-    ret=subprocess.call(extractcmd)
+    cmd = ["ssh", "srv_tcbuild001@localhost", "cp", rootmodule, versionmodule]
+    ret=subprocess.call(cmd)
 #    shutil.copyfile(rootmodule, versionmodule)
     linkpath=os.path.join("/mtkoss", "Modules", "3.2.6", "x86_64", "modulefiles", "Thor",
-        "gcc-%s" % target.split('-')[1])
+        "gcc-%s" % target.split('-')[1], version)
     linktarget=os.path.join("..", "..", "..", "..", "..", "..", "Thor",
         "gcc-%s" % target.split('-')[1], version, version)
-    extractcmd = ["ssh", "srv_tcbuild001@localhost", "ln", "-t", linkpath, "-s", linktarget, version]
-    print (extractcmd)
-    ret=subprocess.call(extractcmd)
-#    os.symlink (linktarget, linkpath)
-    print ("%s -> %s" % (os.path.join(linkpath, version), linktarget))
+    cmd = ["ssh", "srv_tcbuild001@localhost", "ln", "-s", linktarget, linkpath]
+    ret=subprocess.call(cmd)
+    if ret != 0:
+      print ("ERROR: Failed to link %s -> %s" % (linkpath, linktarget))
+      break
+    else:
+      print ("%s -> %s " %  (linkpath, linktarget))
+    linkpath=os.path.join("/mtkoss", "Thor", "gcc-%s" % target.split('-')[1], version, "linux")
+    linktarget=os.path.join("..",  version)
+    cmd = ["ssh", "srv_tcbuild001@localhost", "ln", "-s", linktarget, linkpath]
+    ret=subprocess.call(cmd)
+    if ret != 0:
+      print ("ERROR: Failed to link %s -> %s" % (linkpath, linktarget))
+      break
+    else:
+      print ("%s -> %s " %  (linkpath, linktarget))
 
   print("Adding website changes to git")
   ret=subprocess.call(["git", "add", os.path.join("nanotemplate", "github.md")], cwd = scriptpath)
