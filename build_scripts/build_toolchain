@@ -97,6 +97,16 @@ version_arglist=( )
 if [ ! -d /dev/shm ]; then
     export TMPDIR=/dev/shm
 fi
+
+# Check for functional queueing and dispatch system.
+# If present, use it for git checkout, configure and make steps.
+mosesq ls
+if [ $? -eq 0 ]; then
+    Q_EXEC=mosesq
+else
+    Q_EXEC=""
+fi
+
 # Searches for the first argument within the list that follows.
 # value=`find_list_entry "gcc" "foo:bar" "gcc:moo"` would return 'moo'.
 # If the argument is not found then we return an empty string.
@@ -376,7 +386,7 @@ function check_src() {
 	    fi
 	    if [ "$src" = "$git_home/packages.git" -a "$name" != "packages" ] ; then
 		if [ ! -d $src_dir/packages ] ; then
-		    (cd $src_dir; git clone $git_args $git_src packages)
+		    (cd $src_dir; $Q_EXEC git clone $git_args $git_src packages)
 		fi
 		pver=`find_list_entry "$name" "${version_arglist[@]}"`
 	        c=`(cd $src_dir/packages; ls ${name}*${pver}* 2>/dev/null | wc -l)`
@@ -399,7 +409,11 @@ function check_src() {
 		src=$src_dir/packages/$s
 	    fi
 	    if [ ! -f $src -a ! -d $src_dir/$name ] ; then
-		(cd $src_dir; echo git clone $git_args $git_src $name; git clone $git_args $git_src $name)
+		(cd $src_dir; echo git clone $git_args $git_src $name; $Q_EXEC git clone $git_args $git_src $name)
+		# Only needed for network file systems
+		if [ $? -eq 0 ]; then
+		    while [ ! -d x $src_dir/$name ]; do sleep 1; done
+		fi
 	        update_src_and_apply_patches $1 $2 $3
 	    fi
 	fi
@@ -502,7 +516,7 @@ function do_configure() {
 	config_flags=( "${config_flags[@]}" "--with-bugurl=$bugurl" )
       fi
       if [ "$pkgversion" != "" ] ; then
-	config_flags=( "${config_flags[@]}" "--with-pkgversion=$pkgversion" )
+	config_flags=( "${config_flags[@]}" "--with-pkgversion=\'$pkgversion\'" )
       fi
     fi
     if [ "$config_script" = "" ] ; then
@@ -586,7 +600,7 @@ function do_make() {
 	  cd $objdir
 	  echo "CD: cd $objdir"
 	  echo "MAKE: make $make_jobs $make_args"
-	  make $make_jobs $make_args || exit 1
+	  $Q_EXEC make $make_jobs $make_args || exit 1
 	)
 	return $?
       fi
@@ -911,7 +925,18 @@ function build_one_glibc() {
     else
       F=( "--prefix=/usr" "--with-headers=$sysroot/usr/include" )
     fi
-    F=( "${F[@]}" "--host=$libc_target" )
+    echo "host = $target/$libc_target"
+    case $libc_target in
+	i686*-linux-gnu)
+	    F=( "${F[@]}" "--host=$libc_target" )
+	    ;& # fall-through
+	x86_64*-linux-gnu)
+	    F=( "${F[@]}"  "--without-selinux" )
+	    ;;
+	*)
+	    ;;
+    esac
+
     F=( "${F[@]}" "--disable-profile" "--without-gd" "--without-cvs" )
     F=( "${F[@]}" "--enable-add-ons" )
 
@@ -920,6 +945,10 @@ function build_one_glibc() {
 	    F=( "${F[@]}" "--enable-kernel=4.8.0" )
 	    ;;
     esac
+    # Ugly fix for bison version dependency which only surfaces due to
+    # time-stamp mismatchs when code is checked out on network file system.
+    touch $src/intl/plural.c
+
     CONFIGURE="$src/configure"
     MAKE_TARGET_ALL="all"
     if [ "$sysrootlayout" = "old" ] ; then
@@ -1440,7 +1469,9 @@ function build_component() {
 			F=( "${F[@]}" "--enable-checking=release" "--enable-__cxa_atexit" )
 			F=( "${F[@]}" "--disable-libunwind-exceptions" "--enable-gnu-unique-object" )
 			F=( "${F[@]}" "--disable-dssi" "--with-tune=generic" "--with-arch_32=i686" )
-		        F=( "${F[@]}" "--disable-multilib" ) ;;
+		        F=( "${F[@]}" "--disable-multilib" )
+			# Detection fails
+		        F=( "${F[@]}" "--disable-libsanitizer" ) ;;
 		    mips*-linux-*)
 			F=( "${F[@]}" "--enable-__cxa_atexit" ) ;;
 		    nanomips*-linux-*)
@@ -1532,11 +1563,11 @@ function build_component() {
 	    if [ "x$hostlibs" != "x" ]; then
 	      F=( "${F[@]}" "${T[@]}" "--extra-ldflags=-L$hostlibs/lib" "--extra-cflags=-I$hostlibs/include"  )
 	    fi
+	    # Override libtool and pkg-config as we don't tend to have
+	    # cross-prefix versions of these.
+	    export LIBTOOL=libtool
+	    export PKG_CONFIG=pkg-config
 	    if [ "$host" != "" ]; then
-	      # Override libtool and pkg-config as we don't tend to have
-	      # cross-prefix versions of these.
-	      export LIBTOOL=libtool
-	      export PKG_CONFIG=pkg-config
 	      F=( "${F[@]}" "--static" "--cross-prefix=${host}-" )
 	    fi
 	    case $target/$host in
@@ -1661,9 +1692,11 @@ function build_component() {
 	    esac
 	    ;;
 	gmp/*|mpfr/*|mpc/*)
-	    CONFIGURE=""
-	    MAKE_TARGET_ALL=""
-	    MAKE_TARGET_INSTALL="" ;;
+	    F=( "${F[@]}" "${H[@]}" "--disable-shared" )
+	    #CONFIGURE=""
+	    #MAKE_TARGET_ALL=""
+	    #MAKE_TARGET_INSTALL=""
+	    ;;
 	bison/*|expect/*)
 	;;
 	tcl/*)

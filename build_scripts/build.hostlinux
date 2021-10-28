@@ -38,6 +38,10 @@ b/build_toolchain build "${G[@]}" texinfo || exit 1
 b/build_toolchain build "${G[@]}" binutils  --extra_config_opts="--program-prefix=$TARGET-" || exit 1
 b/build_toolchain update "${G[@]}" glibc
 b/build_toolchain build "${G[@]}" initial_gcc || exit 1
-b/build_toolchain build "${G[@]}" linux_headers || exit 1
+b/build_toolchain .build "${G[@]}" linux_headers || exit 1
+
+# Wait for filesystem to sync when building over NFS
+while [ ! -f $INSTALL/libexec/gcc/$TARGET/4.9.4/cc1 ]; do sleep 1; done
+
 b/build_toolchain build "${G[@]}" sysroot || exit 1
 b/build_toolchain build "${G[@]}" gcc || exit 1

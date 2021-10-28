@@ -7,7 +7,6 @@ GITHOME=ssh://git@github.com/MIPS
 TARGET=${TARGET:-x86_64-w64-mingw32}
 HOST=x86_64-pc-linux-gnu
 INSTALL=${HOST_INSTALL:-$TOPDIR/install-$TARGET}
-BUILDPATH=${BUILDPATH:-/projects/mipssw/toolchains/$HOST/4.9.4-centos6/bin}
 OBJ=$TOPDIR/obj-$TARGET
 SYSROOT=$INSTALL
 
@@ -16,10 +15,31 @@ if [ ! -d `dirname $INSTALL` ]; then
    mkdir -p `dirname $INSTALL`
 fi
 
+grep -q -e 'Ubuntu [0-9]\+.[0-9]\+' /etc/issue
+if [ $? -eq 0 ]; then
+    os=`grep -o -e 'Ubuntu [0-9]\+.[0-9]\+' /etc/issue | tr '\ .' _ | tr U u`
+else
+    os=centos6
+fi
+
+# Cannonical install paths have the structure: $TARGET/version
+# If a host toolchain is also present alongside the same install path
+# then use it directly, else fall-bak to a fixed location.
+HOSTTOOLSROOT=$( dirname $( dirname $HOST_INSTALL ) )
+if [ ! -d $HOSTTOOLSROOT/$HOST/$os/4.9.4_v6.0.0 ]; then
+    HOSTTOOLSROOT=/projects/mipssw/toolchains
+fi
+if [ -d $HOSTTOOLSROOT -a -d $HOSTTOOLSROOT/$HOST/4.9.4-$os/bin ]
+   BUILDPATH=${BUILDPATH}:$HOSTTOOLSROOT/$HOST/4.9.4-$os/bin
+else
+   echo "Warning: Can't find $HOST toolchain, assuming installed default."
+fi
+
 G=(--path=$INSTALL/bin:$BUILDPATH --git_home=$GITHOME --build=$OBJ --prefix=$INSTALL)
 G+=(--target=$TARGET --sysroot=$SYSROOT --jobs=${JOBS:-8} --no-pdf)
 G+=(--branch=gcc:gcc-4_9_4-release --branch=binutils:binutils-2_25-branch)
 G+=(--branch=packages:mips_rel/hosttools)
+G+=(--build_triple=$HOST --host=$HOST)
 
 # If you want to force an update of your sources before the build.
 # uncommment the next line.
@@ -29,7 +49,6 @@ b/build_toolchain update "${G[@]}" packages
 # If you do not want to use the system gmp, mpfr, or mpc.
 # uncomment the next line.
 b/build_toolchain update "${G[@]}" gmp mpfr mpc
-
 
 # You can build these with a single run and listing all targets (in order)
 # they are listed seperately in order to make it easier to build/rebuild a
