@@ -90,23 +90,31 @@ for target in ["nanomips-elf", "nanomips-linux-musl"]:
       print ("Deleting " + linkpath)
       ret=subprocess.call(["ssh", user + "@localhost", "rm", "-f", linkpath], env=my_env)
     if rd[:1] == 'd':
-      break
+      continue
 
+  tarball = os.path.join("/tmp", tarball)
   if os.path.exists (tarball):
     yn=input("Warning: Toolkit tarball already exists, overwrite? [Y/N]: ").lower().strip()
     if yn[:1] == 'y':
       os.remove(tarball)
       
-  try:
-    u=urllib.request.urlopen(req)
-  except urllib.error.URLError as e:
-    print ("ERROR: Unable to get file %s from release URL" % tarball)
-    sys.exit(1)
-  else:
-    print ("Dowloading %s" % release_url)
-    f = open(tarball, "wb")
-    f.write(u.read())
-    f.close()
+  if not os.path.exists(tarball):
+    try:
+      u=urllib.request.urlopen(req)
+    except urllib.error.URLError as e:
+      print ("ERROR: Unable to get file %s from release URL" % tarball)
+      sys.exit(1)
+    else:
+      print ("Dowloading %s" % release_url)
+      f = open(tarball, "wb")
+      f.write(u.read())
+      f.close()
+
+  ret = subprocess.call(["setfacl", "-m", "u:%s:r" % user, tarball])
+  if ret != 0:
+    ret = subprocess.call(["chmod", "o+r", tarball])
+  if ret != 0:
+    print("WARNING: unable to grant read-access to %s, continuing with install anyway")
 
   print("Installing %s toolchain v%s" % (target, version))
   extractcmd = ["ssh", user + "@localhost", "tar", "-x", "-C",
