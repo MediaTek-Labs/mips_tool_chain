@@ -9,6 +9,8 @@ INSTALL=${HOST_INSTALL:-$TOPDIR/install-$TARGET}
 HOSTINSTALL=$TOPDIR/install-host
 OBJ=$TOPDIR/obj-$TARGET
 SYSROOT=$INSTALL/sysroot
+BUILDINSTALL=$TOPDIR/install-build
+BUILDOBJ=$TOPDIR/obj-build
 
 cd $TOPDIR
 if [ ! -d `dirname $INSTALL`  ]; then
@@ -16,10 +18,10 @@ if [ ! -d `dirname $INSTALL`  ]; then
 fi
 
 G=( --path=$INSTALL/bin --git_home=$GITHOME --no-pdf  )
-G+=( --branch=gcc:gcc-4_9_4-release --branch=binutils:binutils-2_25-branch )
+G+=( --branch=gcc:releases/gcc-10.2.0 --branch=binutils:binutils-2_25-branch )
 G+=( --branch=glibc:mips_rel/2_12/hosttools --branch=packages:mips_rel/hosttools )
-BUILDG=("${G[@]}" --jobs=${JOBS:-8} --build=$OBJ --prefix=$INSTALL)
-G+=( "${BUILDG[@]}" --target=$TARGET --sysroot=$SYSROOT )
+BUILDG=("${G[@]}" $HOSTOPTIONS --build=$BUILDOBJ --prefix=$BUILDINSTALL)
+G+=( --build=$OBJ --prefix=$INSTALL --target=$TARGET --sysroot=$SYSROOT )
 
 # If you want to force an update of your sources before the build.
 # uncommment the next line.
@@ -34,14 +36,10 @@ b/build_toolchain update "${G[@]}" gmp mpfr mpc
 # You can build these with a single run and listing all targets (in order)
 # they are listed seperately in order to make it easier to build/rebuild a
 # single component.
-b/build_toolchain build "${G[@]}" texinfo || exit 1
+b/build_toolchain build "${BUILDG[@]}" texinfo || exit 1
 b/build_toolchain build "${G[@]}" binutils  --extra_config_opts="--program-prefix=$TARGET-" || exit 1
 b/build_toolchain update "${G[@]}" glibc
 b/build_toolchain build "${G[@]}" initial_gcc || exit 1
-b/build_toolchain .build "${G[@]}" linux_headers || exit 1
-
-# Wait for filesystem to sync when building over NFS
-while [ ! -f $INSTALL/libexec/gcc/$TARGET/4.9.4/cc1 ]; do sleep 1; done
-
+b/build_toolchain build "${G[@]}" linux_headers || exit 1
 b/build_toolchain build "${G[@]}" sysroot || exit 1
 b/build_toolchain build "${G[@]}" gcc || exit 1

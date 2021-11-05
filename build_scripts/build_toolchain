@@ -1438,8 +1438,9 @@ function build_component() {
 		F=( "${F[@]}" "--enable-targets=$gcc_enable_targets" )
 	    fi
 	    if [ "$local_build_version" = "initial" ] ; then
-		MAKE_TARGET_ALL="all-gcc all-target-libgcc inhibit_libc=true"
-		MAKE_TARGET_INSTALL="install-gcc install-target-libgcc"
+		MAKE_TARGET_PRE="all-gcc install-gcc"
+		MAKE_TARGET_ALL="all-target-libgcc all-target-libstdc++-v3" inhibit_libc=true
+		MAKE_TARGET_INSTALL="install-target-libgcc install-target-libstdc++-v3"
 		F=( "${F[@]}" "--disable-libquadmath" "--disable-libatomic" )
 		case $target in
 		    i686*-linux-* | x86_64*-linux-*)
@@ -1473,15 +1474,14 @@ function build_component() {
 			;;
 		esac
 		case $target in
-		    i686*-linux-* | x86_64*-linux-*)
-			# These are CentOS 5 GCC configure options
-			F=( "${F[@]}" "--disable-bootstrap" "--enable-shared" "--enable-threads=posix" )
+		    i686*-linux-*)
+			F=( "${F[@]}" "--with-arch_32=i686" "--with-tune=generic" )
+			;&
+		    x86_64*-linux-*)
+			F=( "${F[@]}" "--disable-bootstrap" "--disable-multilib" )
 			F=( "${F[@]}" "--enable-checking=release" "--enable-__cxa_atexit" )
-			F=( "${F[@]}" "--disable-libunwind-exceptions" "--enable-gnu-unique-object" )
-			F=( "${F[@]}" "--disable-dssi" "--with-tune=generic" "--with-arch_32=i686" )
-		        F=( "${F[@]}" "--disable-multilib" )
-			# Detection fails
-		        F=( "${F[@]}" "--disable-libsanitizer" ) ;;
+#			F=( "${F[@]}" "--disable-libunwind-exceptions" "--enable-gnu-unique-object" )
+			;;
 		    mips*-linux-*)
 			F=( "${F[@]}" "--enable-__cxa_atexit" ) ;;
 		    nanomips*-linux-*)
@@ -1785,10 +1785,22 @@ function build_component() {
       do_make $component $build_directory "--jobs 1 $MAKE_TARGET_PRE"
       check_return make $?
     fi
-    do_make $component $build_directory "$MAKE_TARGET_ALL"
-    check_return make $?
-    do_make $component $build_directory "$MAKE_TARGET_INSTALL"
-    check_return make $?
+    if [ "x$component" == "xgcc" ]; then
+    	i=1
+    	for t in $MAKE_TARGET_ALL;do
+    	    inst=$( echo $MAKE_TARGET_INSTALL | cut -d\  -f $i )
+    	    do_make $component $build_directory $t inhibit_libc=true
+    	    check_return make $?
+    	    do_make $component $build_directory $inst
+    	    check_return make $?
+    	    i=$(($i + 1))
+    	done
+    else
+	do_make $component $build_directory "$MAKE_TARGET_ALL"
+	check_return make $?
+	do_make $component $build_directory "$MAKE_TARGET_INSTALL"
+	check_return make $?
+    fi
 
     case $component/$target in
 	gdb/mips*)
