@@ -1554,8 +1554,8 @@ function build_component() {
 	    T=( "${T[@]}" "--disable-pie" "--disable-vnc" "--disable-curses" )
 	    T=( "${T[@]}" "--disable-virtfs" "--disable-sdl" "--disable-gtk" )
 	    T=( "${T[@]}" "--disable-libssh2" "--disable-curl" "--disable-bluez" )
-	    T=( "${T[@]}" "--disable-bzip2" "--disable-libxml2" )
-	    T=( "${T[@]}" "--disable-vhost-user" )
+	    T=( "${T[@]}" "--disable-bzip2" "--disable-libxml2" "--disable-vhost-user" )
+	    T=( "${T[@]}" "--disable-gcrypt" "--disable-libusb" )
 	    if [ -f $hostlibs/bin/python ]; then
 		T=( "${T[@]}" "--python=$hostlibs/bin/python" )
 	    elif [ -f $prefix/python-root/bin/python ]; then
