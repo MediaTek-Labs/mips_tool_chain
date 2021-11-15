@@ -1382,6 +1382,14 @@ function build_component() {
 	    if [ "x$buildlibs" != "x" ]; then
 	      export TEXMFHOME=$buildlibs/share/tex/texmf
 	    fi
+	    case $host in
+		x86_64-w64-mingw32|i686-w64-mingw32)
+		    if [ "x$build_triple" != "x" ]; then
+			export CC_FOR_BUILD=$build_triple"-gcc"
+			export CXX_FOR_BUILD=$build_triple"-g++"
+		    fi
+		    ;;
+	    esac
 	    # Ugly fix for bison version dependency which only surfaces due to
 	    # time-stamp mismatchs when code is checked out on network file system.
 	    touch $src/intl/plural.c
