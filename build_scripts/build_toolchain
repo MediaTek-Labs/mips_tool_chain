@@ -1437,6 +1437,7 @@ function build_component() {
 	    if [ "$gcc_enable_targets" != "" ] ; then
 		F=( "${F[@]}" "--enable-targets=$gcc_enable_targets" )
 	    fi
+	    F=( "${F[@]}"  "--with-static-standard-libraries" )
 	    if [ "$local_build_version" = "initial" ] ; then
 		MAKE_TARGET_PRE="all-gcc install-gcc"
 		MAKE_TARGET_ALL="all-target-libgcc all-target-libstdc++-v3" inhibit_libc=true
