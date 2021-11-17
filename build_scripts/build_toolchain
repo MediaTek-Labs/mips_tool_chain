@@ -1579,6 +1579,7 @@ function build_component() {
 	    # cross-prefix versions of these.
 	    export LIBTOOL=libtool
 	    export PKG_CONFIG=pkg-config
+	    export PKG_CONFIG_DIR=$hostlibs/lib/pkgconfig
 	    if [ "$host" != "" ]; then
 	      F=( "${F[@]}" "--static" "--cross-prefix=${host}-" )
 	    fi
@@ -1719,6 +1720,7 @@ function build_component() {
 	python/*|Python/*)
 	    F=( "${F[@]}" "${H[@]}" "--without-ensurepip" "--disable-shared" )
 	    cc=$host"-gcc"
+	    export PKG_CONFIG_PATH=$hostlibs/lib/pkgconfig:$PKG_CONFIG_PATH
 	    troot=`dirname \`which $cc\``/..
 	    if [ "x$hostlibs" != "x" ]; then
 		export LDFLAGS="-L$hostlibs/lib"
