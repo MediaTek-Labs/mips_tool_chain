@@ -1619,7 +1619,23 @@ function build_component() {
 	ncurses/*)
 	    F=( "${F[@]}" "${H[@]}" "--disable-shared" "--disable-nls" )
 	    F=( "${F[@]}" "--with-terminfo-dirs=/usr/share/terminfo" )
-	    F=( "${F[@]}" "--without-ada" "--without-tests" "--without-progs" ) ;;
+	    F=( "${F[@]}" "--without-ada" "--without-tests" )
+	    case $host in
+		*-*-mingw*)
+		    export CFLAGS="$CFLAGS -static-libgcc -Wl,--enable-auto-import"
+		    if [ -e $src/VERSION ]; then
+			grep -e $src/VERSION | cut -f 2 | grep -e '[6-9]\.[0-9]\+'
+			if [ $? -eq 0 ]; then
+			    F=( "${F[@]}" "--with-shared" "--with-cxx-shared" )
+			fi
+		    fi
+		    F=( "${F[@]}" "--enable-sp-funcs" "--enable-term-driver" )
+		    F=( "${F[@]}" "--disable-db-install" )
+		    F=( "${F[@]}" "--with-build-cc=x86_64-pc-linux-gnu-gcc" )
+		    F=( "${F[@]}" "--with-build-cpp=x86_64-pc-linux-gnu-g++" )
+		    ;;
+	     esac
+	    ;;
 	termcap/*)
 	    F=( "${F[@]}" "--disable-shared" "--disable-nls" )
 	    MAKE_TARGET_INSTALL="install oldincludedir=" ;;
