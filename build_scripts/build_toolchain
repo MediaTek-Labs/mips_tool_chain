@@ -1655,13 +1655,14 @@ function build_component() {
 		# Some libraries are not picked up via pkgconfig so add the host
 		# library and include paths manually as well
 		export CFLAGS="$CFLAGS -I$hostlibs/include"
-		export LDFLAGS="$CFLAGS -L$hostlibs/lib"
+		export LDFLAGS="$CFLAGS -L$hostlibs/lib -Wl,--allow-multiple-definition"
 		export CPPFLAGS="$CFLAGS"
 	    fi
 
 	    F=( "${F[@]}" "${H[@]}" "--disable-shared" "--enable-static" )
 	    F=( "${F[@]}" "--with-pcre=internal" "--disable-compile-warnings" )
-	    F=( "${F[@]}" "--disable-always-build-tests" "--with-libiconv=gnu" ) ;;
+	    F=( "${F[@]}" "--disable-always-build-tests" "--with-libiconv=gnu" )
+	    F=( "${F[@]}" "--disable-libmount" "glib_cv_uscore=yes" "glib_cv_stack_grows=yes" ) ;;
 	smallclib/*)
 	    CONFIGURE=cmake
 	    F=( "-DCMAKE_SYSTEM_NAME=$target" )
