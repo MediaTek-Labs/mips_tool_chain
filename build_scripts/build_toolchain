@@ -86,7 +86,7 @@ src_repos=( "glibc" "newlib" "dejagnu" "binutils:binutils-gdb" \
             "libffi:packages" "texinfo:packages" "expect:packages" "tcl:packages" \
 	    "binutils-binutils:binutils-gdb" "binutils-ld:binutils-gdb" \
 	    "binutils-gas:binutils-gdb" "gdb-py:binutils-gdb" "python:cpython" \
-	    "symlinks:packages" )
+	    "symlinks:packages" "ninja:packages" )
 
 src_list=( )
 src_arglist=( )
@@ -1784,6 +1784,14 @@ function build_component() {
 		-e  's|\(.*\)man8|#\1|' \
 		-e 's/-o root -g root//' $bld_dir/$component/Makefile
 	    ;;
+	 ninja/*)
+	    CONFIGURE="$src/configure.py"
+	    F=( "--with-python=python3.7" "--bootstrap" )
+	    export CXX=x86_64-pc-linux-gnu-g++
+	    export CXXFLAGS="-static-libstdc++"
+	    make_target_all="skip"
+	    make_target_install="skip"
+	    ;;
 	*)
 	    echo "Bad build component/target ($component/$target)"; exit 1 ;;
     esac
@@ -1839,6 +1847,9 @@ function build_component() {
 	libffi/x86_64-pc-linux-gnu)
 	  ln -sf ../lib64/libffi.so $prefix/lib/libffi.so
 	  ln -sf ../lib64/libffi.so.6 $prefix/lib/libffi.so.6
+	  ;;
+	ninja/*)
+	  cp $build_directory/ninja $prefix/bin/ninja
 	  ;;
     esac
 }
@@ -1956,7 +1967,7 @@ else
 	for i in $components
 	do
 	    case $i in
-		gmp|mpfr|mpc|expat|termcap|ncurses|zlib|pixman|glib|libffi|libiconv|gettext|texinfo|binutils|binutils-gdb|binutils-binutils|binutils-gas|binutils-ld|initial_gcc|gcc|gold|newlib|smallclib|gdb|qemu|mingw|mingw-w64|llvm|llvm_multilibs|lldb_server|bison|Python|make|gdb-py|python|openssl|tcl|expect|symlinks)
+		gmp|mpfr|mpc|expat|termcap|ncurses|zlib|pixman|glib|libffi|libiconv|gettext|texinfo|binutils|binutils-gdb|binutils-binutils|binutils-gas|binutils-ld|initial_gcc|gcc|gold|newlib|smallclib|gdb|qemu|mingw|mingw-w64|llvm|llvm_multilibs|lldb_server|bison|Python|make|gdb-py|python|openssl|tcl|expect|symlinks|ninja)
 		    build_component $i ;;
 		glibc|glibc_multilibs|uclibc|uclibc_multilibs|musl|musl_multilibs|sysroot)
 		    build_system_libs ;;
