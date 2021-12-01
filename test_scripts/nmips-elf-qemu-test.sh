@@ -161,7 +161,7 @@ if [[ $RUNLIST =~ libstdc\+\+ ]]; then
 	    wait ${jqueue[$((jcount - JOB_MAX))]}
 	fi
 
-	DEJAGNU_SIM_LDSCRIPT="-Tuhi32.ld" DEJAGNU_SIM_LINK_FLAGS="-Wl,--defsym,__memory_size=32M" DEJAGNU_SIM_OPTIONS="-cpu nanomips-generic -semihosting -nographic -kernel"  DEJAGNU_SIM=$TOOLCHAIN/bin/qemu-system-nanomips  PATH=$TOOLCHAIN/bin:$HOSTTOOLS/bin:$SRCDIR/dejagnu:$PATH $SRCDIR/gcc/contrib/test_installed.libstdc++"$$" --without-gfortran --without-objc --without-gcc --without-g++ --prefix=$TOOLCHAIN --target=nanomips-elf --target_board=$cfg SIM=$TOOLCHAIN/bin/nanomips-elf-run -v -v -v  $4 &> test.log &
+	DEJAGNU_SIM_LDSCRIPT="-Tuhi32.ld" DEJAGNU_SIM_LINK_FLAGS="-Wl,--defsym,__memory_size=32M" DEJAGNU_SIM_OPTIONS="-cpu nanomips-generic -semihosting -nographic -kernel"  DEJAGNU_SIM=$TOOLCHAIN/bin/qemu-system-nanomips  PATH=$TOOLCHAIN/bin:$HOSTTOOLS/bin:$SRCDIR/dejagnu:$PATH $SRCDIR/gcc/contrib/test_installed.libstdc++"$$" --without-gfortran --without-objc --without-gcc --without-g++ --prefix=$TOOLCHAIN --target=nanomips-elf --target_board=$cfg -v -v -v  $4 &> test.log &
 	jqueue+=( $! )
 	popd > /dev/null
     done
@@ -196,7 +196,7 @@ if [[ $RUNLIST =~ newlib ]]; then
 	fi
 	# Needed for header-check in newlib.locale/UTF-8 test
 	ln -s $TOOLCHAIN/nanomips-elf/include targ-include
-	DEJAGNU_SIM_LDSCRIPT="-Tuhi32.ld" DEJAGNU_SIM_LINK_FLAGS="-Wl,--defsym,__memory_size=32M" DEJAGNU_SIM_OPTIONS="-cpu nanomips-generic -semihosting -nographic -kernel"  DEJAGNU_SIM=$TOOLCHAIN/bin/qemu-system-nanomips PATH=$TOOLCHAIN/bin:$HOSTTOOLS/bin:$SRCDIR/dejagnu:$PATH $SRCDIR/gcc/contrib/test_installed.newlib"$$" --without-gfortran --without-objc --without-gcc --without-g++ --prefix=$TOOLCHAIN --target=nanomips-elf --target_board=$cfg SIM=$TOOLCHAIN/bin/nanomips-elf-run -v -v -v  $4 &> test.log &
+	DEJAGNU_SIM_LDSCRIPT="-Tuhi32.ld" DEJAGNU_SIM_LINK_FLAGS="-Wl,--defsym,__memory_size=32M" DEJAGNU_SIM_OPTIONS="-cpu nanomips-generic -semihosting -nographic -kernel"  DEJAGNU_SIM=$TOOLCHAIN/bin/qemu-system-nanomips PATH=$TOOLCHAIN/bin:$HOSTTOOLS/bin:$SRCDIR/dejagnu:$PATH $SRCDIR/gcc/contrib/test_installed.newlib"$$" --without-gfortran --without-objc --without-gcc --without-g++ --prefix=$TOOLCHAIN --target=nanomips-elf --target_board=$cfg -v -v -v  $4 &> test.log &
 	jqueue+=( $! )
 	popd > /dev/null
     done
