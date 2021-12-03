@@ -178,7 +178,7 @@ if True:
   content = f.read()
   f.close()
   content = content.replace("mtklogo.svg","https://cdn-www.mediatek.com/icons/mtklogo.svg")
-  content = content.replace("http://172.21.160.85/swits",
+  content = content.replace("http://mtksap70.mediatek.inc/bugzilla",
                             "https://github.com/MediaTek-Labs/nanomips-gnu-toolchain/issues")
   f = open(md, mode='w')
   f.write(content)
