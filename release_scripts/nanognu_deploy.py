@@ -129,6 +129,12 @@ for target in ["nanomips-elf", "nanomips-linux-musl"]:
     print ("Deployed %s toolchain to %s" % (target_to_name[target], install_path))
     os.remove(tarball)
 
+  ret = subprocess.call(["setfacl", "-R", "-m", "o:rX", install_dir])
+  if ret != 0:
+    ret = subprocess.call(["chmod", "-R", "o+rX", install_dir)
+  if ret != 0:
+    print("WARNING: unable to grant read-access to %s" % install_dir)
+
   rootmodule=os.path.join("/mtkoss", "Thor", "gcc-elf", "2019.03-07", "2019.03-07")
   versionmodule=os.path.join("/mtkoss", "Thor", "gcc-%s" % target.split('-')[1], version, version)
   cmd = ["ssh", user + "@localhost", "cp", rootmodule, versionmodule]
