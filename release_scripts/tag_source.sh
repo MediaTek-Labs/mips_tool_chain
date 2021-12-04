@@ -1,11 +1,12 @@
 #!/bin/bash
 
-OPTS=`getopt -o p:e:l:dcvh --long path:,elf:,linux:,dry-run,clear-tags,verify,help -n 'parse options' -- "$@"`
+OPTS=`getopt -o p:e:l:g:dcvh --long path:,elf:,linux:,group:,dry-run,clear-tags,verify,help -n 'parse options' -- "$@"`
 eval set -- "$OPTS"
 
 rootdir=""
 testid=0
 testid_linux=0
+group_name=""
 dry_run=0
 clear=0
 verify=0
@@ -16,6 +17,7 @@ while true ; do
 	-p|--path) rootdir=$2; shift 2;;
 	-e|--elf) testid=$2; shift 2;;
 	-l|--linux) testid_linux=$2; shift 2;;
+	-g|--group) group_name=$2; shift 2;;
 	-d|--dry-run) dry_run=1; shift;;
 	-c|--clear-tags) clear=1; shift;;
 	-v|--verify) verify=1; shift;;
@@ -23,6 +25,7 @@ while true ; do
 	    echo "	--path=<path_to_checked_out_sources>"
 	    echo "	--elf=<ELF toolchain overtest id>"
 	    echo "	--linux=<Linux toolchain overtest id>"
+	    echo "	--group=<build group name>"
 	    echo "	--dry-run	Print commands only)"
 	    echo "	--clear-tags	Delete existing tags instead of creating them)"
 	    echo "	--verify	Verify that the tags are applied and committed"
@@ -41,7 +44,7 @@ else
     maybe_doit=
 fi
 
-python --version 2>&1 | grep -q -e "Python 2"
+python2 --version 2>&1 | grep -q -e "Python 2"
 if [ $? -ne 0 ]; then
     echo "ERROR: Python executable " `which python` " is not python v2"
     exit 1
@@ -55,14 +58,25 @@ elif [ ! -d $rootdir ]; then
     exit 1
 fi
 
-if [ $testid -eq 0 ]; then
-    echo "ERROR: Required option: --elf=<ELF toolchain overtest id>"
-    exit 1
-fi
+if [ "x$group_name" == "x" ]; then 
+    if [ $testid -eq 0 ]; then
+	echo "ERROR: Required option: --elf=<ELF toolchain overtest id>"
+	exit 1
+    fi
 
-if [ $testid_linux -eq 0 ]; then
-    echo "ERROR: Required option: --linux=<Linux toolchain overtest id>"
-    exit 1
+    if [ $testid_linux -eq 0 ]; then
+	echo "ERROR: Required option: --linux=<Linux toolchain overtest id>"
+	exit 1
+    fi
+else
+    testid=$( python2 $rootdir/overtest/overtest.py --export --schema=testrunid --category="MIPS Toolchain" --action="Toolchain Build" --version="Bare Metal - qemu,python" --group=$group_name | cut -d\  -f2 )
+    if [ -z $testid ]; then
+	testid=0;
+    fi
+    testid_linux=$( python2 $rootdir/overtest/overtest.py --export --schema=testrunid --category="MIPS Toolchain" --action="Toolchain Build" --version="Linux - musl,qemu,python" --group=$group_name | cut -d\  -f 2 )
+    if [ -z $testid_linux ]; then
+	testid_linux=0;
+    fi
 fi
 
 if [ ! -d $rootdir/overtest ]; then
@@ -75,13 +89,13 @@ if [ ! -d $rootdir/mips_tool_chain ]; then
     git clone -b mtk/master  $githome/mips_tool_chain $rootdir/mips_tool_chain
 fi
 
-python $rootdir/overtest/overtest.py --export --schema=testrun -i $testid > /dev/null
+python2 $rootdir/overtest/overtest.py --export --schema=testrun -i $testid > /dev/null
 if [ $? -ne 0 ]; then
     echo "ERROR: Invalid ELF testrun ID: $testid"
     exit 1
 fi
 
-python $rootdir/overtest/overtest.py --export --schema=testrun -i $testid_linux > /dev/null
+python2 $rootdir/overtest/overtest.py --export --schema=testrun -i $testid_linux > /dev/null
 if [ $? -ne 0 ]; then
     echo "ERROR: Invalid Linux testrun ID: $testid_linux"
     exit 1
@@ -98,8 +112,8 @@ fi
 
 cd $rootdir
 
-version=`python $rootdir/overtest/overtest.py --export --schema=testrun -i $testid | grep -e "Release Version:" | cut -d: -f2 | tr -d \ `
-arch=`python $rootdir/overtest/overtest.py --export --schema=testrun -i $testid | grep -e "Architecture:" | cut -d: -f2 | tr -d \ `
+version=`python2 $rootdir/overtest/overtest.py --export --schema=testrun -i $testid | grep -e "Release Version:" | cut -d: -f2 | tr -d \ `
+arch=`python2 $rootdir/overtest/overtest.py --export --schema=testrun -i $testid | grep -e "Architecture:" | cut -d: -f2 | tr -d \ `
 
 if [ $arch == "mips" ]; then
     packages="binutils gcc gdb gold newlib uclibc packages qemu smallclib glibc dejagnu python"
@@ -112,17 +126,17 @@ fi
 # Checkout or verify that sources exist
 for p in $packages; do
     # Fetch the repo-name and translate to writeable (secure) URL
-    repo=`python $rootdir/overtest/overtest.py --export --schema=testrun -i $testid --automatic | grep -i -e "$p Remote:" | cut -d: -f3  | tr -d \'\ `
+    repo=`python2 $rootdir/overtest/overtest.py --export --schema=testrun -i $testid --automatic | grep -i -e "$p Remote:" | cut -d: -f3  | tr -d \'\ `
     if [ -z "$repo" ]; then
-	repo=`python $rootdir/overtest/overtest.py --export --schema=testrun -i $testid_linux --automatic | grep -i -e "$p Remote:" | cut -d: -f3  | tr -d \'\ `
+	repo=`python2 $rootdir/overtest/overtest.py --export --schema=testrun -i $testid_linux --automatic | grep -i -e "$p Remote:" | cut -d: -f3  | tr -d \'\ `
     fi
     # Translate ://<url> to ssh://git@<url>
     repo=${repo/\/\//ssh:\/\/git@}
 
     # Fetch the branch-name
-    branch=`python $rootdir/overtest/overtest.py --export --schema=testrun -i $testid --automatic | grep -i -e "$p Branch:" | cut -d: -f2  | tr -d \'\ `
+    branch=`python2 $rootdir/overtest/overtest.py --export --schema=testrun -i $testid --automatic | grep -i -e "$p Branch:" | cut -d: -f2  | tr -d \'\ `
     if [ -z "$branch" ]; then
-	branch=`python $rootdir/overtest/overtest.py --export --schema=testrun -i $testid_linux --automatic | grep -i -e "$p Branch:" | cut -d: -f2  | tr -d \'\ `
+	branch=`python2 $rootdir/overtest/overtest.py --export --schema=testrun -i $testid_linux --automatic | grep -i -e "$p Branch:" | cut -d: -f2  | tr -d \'\ `
     fi
 
     if [ -d $p/.git ]; then
@@ -169,9 +183,9 @@ for p in $packages; do
     fi
 
     # fetch the version number
-    rev=`python $rootdir/overtest/overtest.py --export --schema=testrun -i $testid --automatic | grep -i -e "$p rev:" | cut -d: -f2  | tr -d \'\ `
+    rev=`python2 $rootdir/overtest/overtest.py --export --schema=testrun -i $testid --automatic | grep -i -e "$p rev:" | cut -d: -f2  | tr -d \'\ `
     if [ -z "$rev" ]; then
-	rev=`python $rootdir/overtest/overtest.py --export --schema=testrun -i $testid_linux --automatic | grep -i -e "$p rev:" | cut -d: -f2  | tr -d \'\ `
+	rev=`python2 $rootdir/overtest/overtest.py --export --schema=testrun -i $testid_linux --automatic | grep -i -e "$p rev:" | cut -d: -f2  | tr -d \'\ `
     fi
 
     pushd $srcdir
