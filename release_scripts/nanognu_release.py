@@ -180,6 +180,7 @@ if True:
   content = content.replace("mtklogo.svg","https://cdn-www.mediatek.com/icons/mtklogo.svg")
   content = content.replace("http://mtksap70.mediatek.inc/bugzilla",
                             "https://github.com/MediaTek-Labs/nanomips-gnu-toolchain/issues")
+  content = re.sub(r"(\[BZ #[0-9]+\])\([^)]*\)", r"\1", content)
   f = open(md, mode='w')
   f.write(content)
   f.close()
