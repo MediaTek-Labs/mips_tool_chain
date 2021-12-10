@@ -1383,7 +1383,7 @@ function build_component() {
 	      export TEXMFHOME=$buildlibs/share/tex/texmf
 	    fi
 	    case $host in
-		x86_64-w64-mingw32|i686-w64-mingw32)
+		x86_64-w64-mingw32|i686-w64-mingw32|i686-pc-linux-gnu)
 		    if [ "x$build_triple" != "x" ]; then
 			export CC_FOR_BUILD=$build_triple"-gcc"
 			export CXX_FOR_BUILD=$build_triple"-g++"
@@ -1422,6 +1422,8 @@ function build_component() {
 	    if [ "x$buildlibs" != "x" ]; then
 	      export TEXMFHOME=$buildlibs/share/tex/texmf
 	    fi
+	    export CC_FOR_BUILD=x86_64-pc-linux-gnu-gcc
+	    export CXX_FOR_BUILD=x86_64-pc-linux-gnu-g++
 	    F=( "${F[@]}" "${H[@]}" "${GCC_FLAGS[@]}" "--target=$target" )
 	    if [ "$gcc_arch" != "" ] ; then
 		F=( "${F[@]}" "--with-arch=$gcc_arch" )
