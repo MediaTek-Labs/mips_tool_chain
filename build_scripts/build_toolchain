@@ -1625,6 +1625,8 @@ function build_component() {
 	pixman/*)
 	    F=( "${F[@]}" "${H[@]}" "--disable-libpng" "--disable-shared" "--enable-static" ) ;;
 	glib/*)
+	    export CC_FOR_BUILD=x86_64-pc-linux-gnu-gcc
+	    export CXX_FOR_BUILD=x86_64-pc-linux-gnu-g++
 	    case $host in
 		*-*-mingw*)
 		    CFLAGS="$CFLAGS -Wl,--enable-auto-import -lucrt"
