@@ -1325,6 +1325,11 @@ function build_component() {
 	    MAKE_TARGET_INSTALL="install-gold"
 	    F=( "${F[@]}" "${H[@]}" "--enable-plugins" "--without-gnu-as" )
 	    F=( "${F[@]}"  "--target=$target" "--with-sysroot=$sysroot" )
+	    case $host in
+	      *-*-mingw*)
+		export CXXFLAGS="$CXXFLAGS -Wno-cast-function-type" ;;
+	      *) ;;
+	    esac
 	    case $target in
 		nanomips*)
 		    F=( "${F[@]}" "--enable-gold=default" "--enable-threads" ) ;;
