@@ -86,7 +86,7 @@ src_repos=( "glibc" "newlib" "dejagnu" "binutils:binutils-gdb" \
             "libffi:packages" "texinfo:packages" "expect:packages" "tcl:packages" \
 	    "binutils-binutils:binutils-gdb" "binutils-ld:binutils-gdb" \
 	    "binutils-gas:binutils-gdb" "gdb-py:binutils-gdb" "python:cpython" \
-	    "symlinks:packages" "ninja:packages" )
+	    "symlinks:packages" "ninja:packages" "meson:packages" )
 
 src_list=( )
 src_arglist=( )
@@ -1814,6 +1814,13 @@ function build_component() {
 	    make_target_all="skip"
 	    make_target_install="skip"
 	    ;;
+	 meson/*)
+	    CONFIGURE="$src/packaging/create_zipapp.py"
+	    F=( "--outfile="$prefix/bin/meson.pyz )
+	    F=( "${F[@]}" "--interpreter="`find_python $host $prefix` "$src" )
+	    make_target_all="skip"
+	    make_target_install="skip"
+	    ;;
 	*)
 	    echo "Bad build component/target ($component/$target)"; exit 1 ;;
     esac
@@ -1989,7 +1996,7 @@ else
 	for i in $components
 	do
 	    case $i in
-		gmp|mpfr|mpc|expat|termcap|ncurses|zlib|pixman|glib|libffi|libiconv|gettext|texinfo|binutils|binutils-gdb|binutils-binutils|binutils-gas|binutils-ld|initial_gcc|gcc|gold|newlib|smallclib|gdb|qemu|mingw|mingw-w64|llvm|llvm_multilibs|lldb_server|bison|Python|make|gdb-py|python|openssl|tcl|expect|symlinks|ninja)
+		gmp|mpfr|mpc|expat|termcap|ncurses|zlib|pixman|glib|libffi|libiconv|gettext|texinfo|binutils|binutils-gdb|binutils-binutils|binutils-gas|binutils-ld|initial_gcc|gcc|gold|newlib|smallclib|gdb|qemu|mingw|mingw-w64|llvm|llvm_multilibs|lldb_server|bison|Python|make|gdb-py|python|openssl|tcl|expect|symlinks|ninja|meson)
 		    build_component $i ;;
 		glibc|glibc_multilibs|uclibc|uclibc_multilibs|musl|musl_multilibs|sysroot)
 		    build_system_libs ;;
