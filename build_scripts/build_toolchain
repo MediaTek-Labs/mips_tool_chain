@@ -1394,6 +1394,7 @@ function build_component() {
 	    fi
 	    if [ "x$host" != "x$build_triple" ]; then
 		export CC_FOR_BUILD=$build_triple"-gcc"
+		export CXXFLAGS_FOR_BUILD="-static"
 		export CXX_FOR_BUILD=$build_triple"-g++"
 	    fi
 
