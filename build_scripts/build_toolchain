@@ -698,7 +698,6 @@ function build_one_uclibc() {
     s=`find_list_entry $component "${src_list[@]}"`
     check_src $s ${src_dir} $component
     src=`find_src $s ${src_dir} $component`
-
     sysrootlayout=`get_sysroot_layout`
 
     nn=`echo $ml | sed -e 's/;.*$//' -e 's,/,_,g' -e 's/\./default/'`
@@ -1171,6 +1170,26 @@ function check_qemu_configure() {
   done
 }
 
+function find_python () {
+    host=$1
+    prefix=$2
+    case $host in
+	x86_64-pc-linux-gnu)
+	    if [ -f $prefix/python-root/bin/python3 ]; then
+		echo $prefix/python-root/bin/python3
+		return
+	    fi
+	    ;&
+	*)
+	    which python3 &> /dev/null
+	    if [ $? -ne 0 ]; then
+		echo "Error: could not find usable python3 in path"
+	    fi
+	    which python3
+	    ;;
+    esac
+}
+
 # This function builds one component.  It uses the component name and the
 # target name to determine how to configure and build the desired component.
 # Argument 1 is the component to build.
@@ -1574,19 +1593,7 @@ function build_component() {
 	    T=( "${T[@]}" "--disable-libssh2" "--disable-curl" "--disable-bluez" )
 	    T=( "${T[@]}" "--disable-bzip2" "--disable-libxml2" "--disable-vhost-user" )
 	    T=( "${T[@]}" "--disable-gcrypt" "--disable-libusb" "--ninja=$buildlibs/bin/ninja" )
-	    if [ -f $hostlibs/bin/python ]; then
-		T=( "${T[@]}" "--python=$hostlibs/bin/python" )
-	    elif [ -f $prefix/python-root/bin/python ]; then
-		T=( "${T[@]}" "--python=$prefix/python-root/bin/python" )
-	    elif [ -f $prefix/python-root/bin/python3 ]; then
-		T=( "${T[@]}" "--python=$prefix/python-root/bin/python3" )
-	    elif [ -f /mips/tools/sweng/freeware/python/2.7.13/Linux/bin/python ]; then
-		T=( "${T[@]}" "--python=/mips/tools/sweng/freeware/python/2.7.13/Linux/bin/python" )
-	    elif [ -f /mtkoss/python/2.7.10-rhel-6.3/x86_64/bin/python ]; then
-		T=( "${T[@]}" "--python=/mtkoss/python/2.7.10-rhel-6.3/x86_64/bin/python" )
-            else
-                : None found -- try default python instead.
-	    fi
+	    T=( "${T[@]}" "--meson=$buildlibs/bin/meson.pyz" )
 	    T=( `check_qemu_configure "$CONFIGURE" "${T[@]}"` )
 	    if [ "x$hostlibs" != "x" ]; then
 	      F=( "${F[@]}" "${T[@]}" "--extra-ldflags=-L$hostlibs/lib" "--extra-cflags=-I$hostlibs/include"  )
@@ -1796,8 +1803,13 @@ function build_component() {
 	    ;;
 	 ninja/*)
 	    CONFIGURE="$src/configure.py"
-	    F=( "--with-python=python3.7" "--bootstrap" )
-	    export CXX=x86_64-pc-linux-gnu-g++
+	    F=( "--bootstrap" )
+	    F=( "${F[@]}" "--with-python="`find_python $host $prefix` )
+	    if [ "x$build_triple" != "x" ]; then
+		export CXX=$build_triple"-g++"
+	    else
+		export CXX=$host"-g++"
+	    fi
 	    export CXXFLAGS="-static-libstdc++"
 	    make_target_all="skip"
 	    make_target_install="skip"
