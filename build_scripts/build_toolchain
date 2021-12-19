@@ -1633,7 +1633,7 @@ function build_component() {
 	    esac
 	    ;;
 	expat/*)
-	    F=( "${F[@]}" "${H[@]}" "--disable-shared" "--disable-nls" ) ;;
+	    F=( "${F[@]}" "${H[@]}" "--enable-shared" "--disable-nls" ) ;;
 	ncurses/*)
 	    F=( "${F[@]}" "${H[@]}" "--disable-shared" "--disable-nls" )
 	    F=( "${F[@]}" "--with-terminfo-dirs=/usr/share/terminfo" )
