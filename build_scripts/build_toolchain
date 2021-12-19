@@ -1677,7 +1677,7 @@ function build_component() {
 	    esac ;;
 	gettext/*)
 	    export CPPFLAGS=-DLIBXML_STATIC
-	    F=( "${F[@]}" "${H[@]}" "--without-libxml2-prefix" "--disable-shared" )
+	    F=( "${F[@]}" "${H[@]}" "--with-included-libxml" "--disable-shared" )
 	    F=( "${F[@]}" "--enable-static" "--disable-threads" );;
 	libiconv/*)
 	    F=( "${F[@]}" "${H[@]}" "--disable-shared" "--enable-static" ) ;;
