@@ -17,6 +17,7 @@ HOSTTOOLSROOT=${HOSTTOOLSROOT:-/projects/mipssw/toolchains/}
 BUILDPATH=${BUILDPATH}:$INSTALL/bin
 BUILDPATH=${BUILDPATH#:*} # trim leading :
 TOOLSVERSION=${TOOLSVERSION:-'Scratch/experimental build  `date +%Y%m%d_%H%M`'}
+GCCVER=${GCCVER:-4.9.4}
 
 # Set the host. Supported hosts are:
 # x86_64-pc-linux-gnu - 64-bit Linux (CentOS 5 upwards)
@@ -31,49 +32,72 @@ TOOLSVERSION=${TOOLSVERSION:-'Scratch/experimental build  `date +%Y%m%d_%H%M`'}
 # reference cross compiler tree, to be in the path.  These
 # requirements are not met by this script and must be handled
 # manually.
+#
 
-HOSTTRIPLE=${HOSTTRIPLE:-x86_64-pc-linux-gnu}
+HOST=x86_64-pc-linux-gnu
+HOSTTRIPLE=${HOSTTRIPLE:-${HOST}}
+grep -q -e 'Ubuntu [0-9]\+.[0-9]\+' /etc/issue
+if [ $? -eq 0 ]; then
+    os=`grep -o -e 'Ubuntu [0-9]\+.[0-9]\+' /etc/issue | tr '\ .' _ | tr U u`
+else
+    os=centos6
+fi
 
+HOSTOBJ="${HOSTOBJ}-$HOSTTRIPLE"
+HOSTINSTALL="${HOSTINSTALL}-$HOSTTRIPLE"
 case x$HOSTTRIPLE in
   xx86_64-pc-linux-gnu | xi686-pc-linux-gnu )
     # We pretend the build machine is the host on Linux as we can
     # execute the binaries we create.
     if [ "x$HOSTVERSION" == "x" ]; then
-      HOSTVERSION=4.9.4-centos6
+      HOSTVERSION=${GCCVER}-"$os"
     fi
-    HOSTOBJ="${HOSTOBJ}-$HOSTTRIPLE"
-    HOSTINSTALL="${HOSTINSTALL}-$HOSTTRIPLE"
-    BUILDPATH="${BUILDPATH}:$HOSTTOOLSROOT/$HOSTTRIPLE/$HOSTVERSION/bin"
-    HOSTOPTIONS="--host=$HOSTTRIPLE --build_triple=$HOSTTRIPLE"
-    PYTHONG="";;
+    BUILDPATH="${BUILDPATH}:$HOSTINSTALL/bin:$HOSTTOOLSROOT/$HOSTTRIPLE/$HOSTVERSION/bin"
+    if [ -d ${HOSTTOOLSROOT}/$HOST/${GCCVER}-"$os"/bin ]; then
+      BUILDPATH=${BUILDPATH}:${HOSTTOOLSROOT}/${HOST}/${GCCVER}-"$os"/bin
+    fi
+    TOOLSROOT=$( dirname $( dirname $INSTALL ) )
+    if [ -d $TOOLSROOT/$HOST/$TARGET/bin -a \
+       -d $TOOLSROOT/$HOST/$TARGET/python-root/bin ]; then
+      BUILDPATH="${BUILDPATH}:$TOOLSROOT/$HOST/$TARGET/bin:$TOOLSROOT/$HOST/$TARGET/python-root/bin"
+    fi
+    ;;
   xx86_64-w64-mingw32 | xi686-w64-mingw32 )
     if [ "x$HOSTVERSION" == "x" ]; then
-      HOSTVERSION=4.9.4_v6.0.0
+      HOSTVERSION=${GCCVER}_v6.0.0
     fi
-    HOSTOBJ="${HOSTOBJ}-$HOSTTRIPLE"
-    HOSTINSTALL="${HOSTINSTALL}-$HOSTTRIPLE"
     BUILDPATH="${BUILDPATH}:$HOSTTOOLSROOT/$HOSTTRIPLE/$HOSTVERSION/bin"
-    HOSTOPTIONS="--host=$HOSTTRIPLE"
-    PYTHONG="--build_triple=x86_64-pc-linux-gnu";;
+    if [ -d ${HOSTTOOLSROOT}/$HOST/${GCCVER}"-"$os/bin ]; then
+      BUILDPATH="${BUILDPATH}:${HOSTTOOLSROOT}/$HOST/${GCCVER}-${os}/bin"
+    fi
+    TOOLSROOT=$( dirname $( dirname $INSTALL ) )
+    if [ -d $TOOLSROOT/${HOST}/$TARGET/bin -a \
+       -d $TOOLSROOT/${HOST}/$TARGET/python-root/bin ]; then
+      BUILDPATH="${BUILDPATH}:$TOOLSROOT/$HOST/$TARGET/bin:$TOOLSROOT/$HOST/$TARGET/python-root/bin"
+    fi
+    ;;
   *)
     ;;
 esac
 
+PYTHONG="--build_triple=${HOST}";;
+HOSTOPTIONS="--host=$HOSTTRIPLE --build_triple=$HOST"
 BUILDPATH="$BUILDINSTALL/bin:${BUILDPATH}"
 
 cd $TOPDIR
 
-G=(--path=$BUILDPATH --git_home=$GITHOME --jobs=${JOBS:-8})
+G=(--path=$BUILDPATH --git_home=$GITHOME --jobs=${JOBS:-8} )
 G+=( --branch=gcc:mtk/gcc6 --branch=binutils:mtk/binutils_v9 --branch=gold:mtk/gold_v7 )
 G+=( --branch=musl:mtk/musl_v4 --branch=packages:mtk/packages  )
-G+=( --branch=python:mtk/2_7_16/master --branch=gdb:mtk/gdb8_v3 --branch=gnutools-qemu:mtk/qemu_v3 )
-G+=( --branch=dejangu:mtk/dejagnu )
-BUILDG=("${G[@]}" --build=$BUILDOBJ --prefix=$BUILDINSTALL)
-G+=($HOSTOPTIONS --buildlibs=$BUILDINSTALL --hostlibs=$HOSTINSTALL)
+G+=( --branch=python:mtk/2_7_16/master --branch=gdb:mtk/gdb8_v3  )
+G+=( --branch=dejangu:mtk/dejagnu --branch=gnutools-qemu:mtk/qemu_v3 )
+
+BUILDG=("${G[@]}" --host=$HOST --build=$BUILDOBJ --prefix=$BUILDINSTALL)
+G+=(--host=$HOST $HOSTOPTIONS --buildlibs=$BUILDINSTALL --hostlibs=$HOSTINSTALL)
 HOSTG=("${G[@]}" --build=$HOSTOBJ --prefix=$HOSTINSTALL)
-G+=(--build=$OBJ --with-pkgversion="$TOOLSVERSION")
+G+=(--build=$OBJ )
 PYTHONG=("${G[@]}" --prefix=$INSTALL/python-root "${PYTHONG[@]}")
-G+=(--build=$OBJ --prefix=$INSTALL --target=$TARGET --sysroot=$SYSROOT)
+G+=(--prefix=$INSTALL --target=$TARGET --sysroot=$SYSROOT --with-pkgversion="$TOOLSVERSION")
 
 # Starting from an empty source directory, to checkout all required sources for
 # the contemporary toolchain release
@@ -83,7 +107,7 @@ b/build_toolchain update "${G[@]}" packages musl
 # uncommment the next line.
 # b/build_toolchain update "${G[@]}" texinfo
 # b/build_toolchain update "${G[@]}" termcap ncurses expat
-# b/build_toolchain update "${G[@]}" binutils gdb glibc gcc musl
+# b/build_toolchain update "${G[@]}" binutils gdb musl gcc qemu
 # b/build_toolchain update "${G[@]}" zlib pixman libffi glib qemu
 
 # If you do not want to use the system gmp, mpfr or mpc
@@ -104,20 +128,24 @@ b/build_toolchain build "${G[@]}" gcc || exit 1
 
 b/build_toolchain build "${HOSTG[@]}" expat || exit 1
 b/build_toolchain build "${HOSTG[@]}" termcap || exit 1
+b/build_toolchain build "${HOSTG[@]}" zlib || exit 1
 b/build_toolchain build "${HOSTG[@]}" ncurses || exit 1
 b/build_toolchain build "${HOSTG[@]}" libiconv || exit 1
 b/build_toolchain build "${HOSTG[@]}" gettext || exit 1
 b/build_toolchain build "${G[@]}" gdb || exit 1
-b/build_toolchain build "${HOSTG[@]}" zlib || exit 1
+
 b/build_toolchain build "${HOSTG[@]}" openssl || exit 1
+b/build_toolchain build "${HOSTG[@]}" libffi || exit 1
 b/build_toolchain build "${PYTHONG[@]}" python || exit 1
 case x$HOSTTRIPLE in
   # This only works for linux hosts
   xx86_64-pc-linux-gnu | xi686-pc-linux-gnu )
-  b/build_toolchain build "${G[@]}" gdb-py || exit 1
+	  b/build_toolchain build "${G[@]}" gdb-py || exit 1
   ;;
 esac
+
 b/build_toolchain build "${HOSTG[@]}" pixman || exit 1
-b/build_toolchain build "${HOSTG[@]}" libffi || exit 1
 b/build_toolchain build "${HOSTG[@]}" glib || exit 1
+b/build_toolchain build "${BUILDG[@]}" ninja || exit 1
+b/build_toolchain build "${BUILDG[@]}" meson || exit 1
 b/build_toolchain build "${G[@]}" qemu || exit 1
