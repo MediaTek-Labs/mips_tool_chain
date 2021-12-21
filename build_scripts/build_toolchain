@@ -173,7 +173,7 @@ function parse_args() {
     local prg=`basename "$0"`
     # If "$prg" is not added before "$@"on the getopt call,
     # the first option is ignored.
-    local opts=`getopt --name "$prg" --longoptions build_triple:,buildlibs:,host:,hostlibs:,target:,sysroot:,prefix:,path:,build:,build_subdir:,build_altdir:,source:,jobs:,src:,branch:,patch:,version:,dejagnu_sim:,dejagnu_sim_options:,dejagnu_sim_link_flags:,dejagnu_sim_ldscript:,dejagnu_remote:,dejagnu_baseboard:,extra_config_opts:,make_target_all:,make_target_install:,make_target_check:,runtestflags:,build_version:,git_home:,git_ref:,gcc_branch:,languages:,with-bugurl:,with-pkgversion:,grep_multilibs:,sysrootlayout:,with-arch:,with-abi:,with-endian:,enable-targets:,disable-multilib,preview,localgit,32bit-build,no-pdf -- "$prg" "$@"`
+    local opts=`getopt --name "$prg" --longoptions build_triple:,buildlibs:,host:,hostlibs:,target:,sysroot:,prefix:,path:,build:,build_subdir:,build_altdir:,source:,jobs:,src:,branch:,patch:,version:,dejagnu_sim:,dejagnu_sim_options:,dejagnu_sim_link_flags:,dejagnu_sim_ldscript:,dejagnu_remote:,dejagnu_baseboard:,extra_config_opts:,make_target_all:,make_target_install:,make_target_check:,runtestflags:,build_version:,git_home:,git_ref:,gcc_branch:,languages:,with-bugurl:,with-pkgversion:,grep_multilibs:,sysrootlayout:,with-arch:,with-abi:,with-endian:,enable-targets:,disable-multilib,preview,localgit,32bit-build,no-pdf,gccver -- "$prg" "$@"`
     eval set -- "$opts"
     while true ; do
         case "$1" in
@@ -223,6 +223,7 @@ function parse_args() {
 	    --localgit) localgit="yes" ; shift 1 ;;
 	    --32bit-build) build32="yes" ; shift 1 ;;
 	    --no-pdf) skip_pdfs="yes" ; shift 1 ;;
+	    --gccver) shift 1 ;; # Ignored for now
 	    --) shift ; break ;;
 	    *) echo "Error: Cannot parse command line" >&2 ; exit 1 ;;
         esac
