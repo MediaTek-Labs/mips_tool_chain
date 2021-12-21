@@ -1265,7 +1265,6 @@ function build_component() {
 	    if [ "x$buildlibs" != "x" ]; then
 	      export TEXMFHOME=$buildlibs/share/tex/texmf
 	    fi
-	    export CFLAGS="-Wno-cast-function-type -Wno-stringop-truncation -Wno-overflow -Wno-stringop-overflow"
 	    # Ugly fix for bison version dependency which only surfaces due to
 	    # time-stamp mismatchs when code is checked out on network file system.
 	    touch $src/intl/plural.c
@@ -1316,8 +1315,6 @@ function build_component() {
 	    if [ "x$buildlibs" != "x" ]; then
 	      export TEXMFHOME=$buildlibs/share/tex/texmf
 	    fi
-	    export CFLAGS="-Wno-stringop-truncation -Wno-overflow"
-	    export CXXFLAGS="-Wno-class-memaccess -Wno-misleading-indentation"
 	    # Ugly fix for bison version dependency which only surfaces due to
 	    # time-stamp mismatchs when code is checked out on network file system.
 	    touch $src/intl/plural.c
