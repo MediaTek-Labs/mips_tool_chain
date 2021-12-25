@@ -1844,22 +1844,26 @@ function build_component() {
       do_make $component $build_directory "--jobs 1 $MAKE_TARGET_PRE"
       check_return make $?
     fi
-    if [ "x$component" == "xgcc" ]; then
-    	i=1
-    	for t in $MAKE_TARGET_ALL;do
-    	    inst=$( echo $MAKE_TARGET_INSTALL | cut -d\  -f $i )
-	    do_make $component $build_directory "$t $MAKE_TARGET_COMMON"
-    	    check_return make $?
-    	    do_make $component $build_directory $inst
-    	    check_return make $?
-    	    i=$(($i + 1))
-    	done
-    else
-	do_make $component $build_directory "$MAKE_TARGET_ALL"
-	check_return make $?
-	do_make $component $build_directory "$MAKE_TARGET_INSTALL"
+    # if [ "x$component" == "xgcc" ]; then
+    # 	i=1
+    # 	for t in $MAKE_TARGET_ALL;do
+    # 	    inst=$( echo $MAKE_TARGET_INSTALL | cut -d\  -f $i )
+    # 	    do_make $component $build_directory "$t $MAKE_TARGET_COMMON"
+    # 	    check_return make $?
+    # 	    do_make $component $build_directory $inst
+    # 	    check_return make $?
+    # 	    i=$(($i + 1))
+    # 	done
+    # else
+    if [ "x$MAKE_TARGET_ALL" != "x" ]; then
+	do_make $component $build_directory "$MAKE_TARGET_ALL $MAKE_TARGET_COMMON"
 	check_return make $?
     fi
+    if [ "x$MAKE_TARGET_INSTALL" != "x" ]; then
+	do_make $component $build_directory "$MAKE_TARGET_INSTALL $MAKE_TARGET_COMMON"
+	check_return make $?
+    fi
+    # fi
 
     case $component/$target in
 	gdb/mips*)
