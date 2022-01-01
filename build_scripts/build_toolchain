@@ -1723,6 +1723,7 @@ function build_component() {
 		*-*-mingw*)
 		    # Easier to build for mingw using cmake
 		    CONFIGURE=cmake
+		    sed -i 's/\(check_type_size.off64_t\)/#\1/' $src/CMakeLists.txt
 		    F=( "-DCMAKE_SYSTEM_NAME=$host" )
 		    F=( "${F[@]}" "-DCMAKE_C_COMPILER=${host}-gcc" )
 		    F=( "${F[@]}" "-DCMAKE_RC_COMPILER=${host}-windres" )
