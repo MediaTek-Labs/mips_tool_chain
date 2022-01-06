@@ -90,7 +90,7 @@ BUILDPATH="$BUILDINSTALL/bin:${BUILDPATH}"
 
 cd $TOPDIR
 
-G=(--path=$BUILDPATH --git_home=$GITHOME --jobs=${JOBS:-8})
+G=( --path=$BUILDPATH --git_home=$GITHOME --jobs=${JOBS:-8} )
 G+=( --branch=gcc:mtk/gcc6 --branch=binutils:mtk/binutils_v9 --branch=gold:mtk/gold_v7 )
 G+=( --branch=packages:mtk/packages --branch=newlib:mtk/newlib250 )
 G+=( --branch=python:mtk/2_7_16/master --branch=gdb:mtk/gdb8_v3 --branch=qemu:mtk/qemu_v3 )
@@ -117,7 +117,8 @@ b/build_toolchain build "${BUILDG[@]}" expect || exit 1
 
 b/build_toolchain build "${G[@]}" binutils || exit 1
 b/build_toolchain build "${G[@]}" gold || exit 1
-b/build_toolchain build "${G[@]}" gcc || exit 1
+b/build_toolchain build "${G[@]}" --make_target_install=skip --make_target_all="" gcc || exit 1
+b/build_toolchain build "${G[@]}" --make_target_all=skip --make_target_install="" gcc || exit 1
 b/build_toolchain build "${G[@]}" smallclib || exit 1
 
 b/build_toolchain build "${HOSTG[@]}" expat || exit 1

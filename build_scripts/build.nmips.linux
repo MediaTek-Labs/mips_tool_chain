@@ -93,7 +93,7 @@ G+=( --branch=python:mtk/2_7_16/master --branch=gdb:mtk/gdb8_v3  )
 G+=( --branch=dejangu:mtk/dejagnu --branch=gnutools-qemu:mtk/qemu_v3 )
 
 BUILDG=("${G[@]}" --host=$HOST --build=$BUILDOBJ --prefix=$BUILDINSTALL)
-G+=(--host=$HOST $HOSTOPTIONS --buildlibs=$BUILDINSTALL --hostlibs=$HOSTINSTALL)
+G+=($HOSTOPTIONS --buildlibs=$BUILDINSTALL --hostlibs=$HOSTINSTALL)
 HOSTG=("${G[@]}" --build=$HOSTOBJ --prefix=$HOSTINSTALL)
 G+=(--build=$OBJ )
 PYTHONG=("${G[@]}" --prefix=$INSTALL/python-root "${PYTHONG[@]}")
@@ -121,7 +121,10 @@ b/build_toolchain build "${BUILDG[@]}" symlinks || exit 1
 
 b/build_toolchain build "${G[@]}" binutils || exit 1
 b/build_toolchain build "${G[@]}" gold || exit 1
-b/build_toolchain build "${G[@]}" initial_gcc || exit 1
+IG=("${G[@]}" --jobs=1 --make_target_install=skip --make_target_all="all-gcc all-target-libgcc")
+b/build_toolchain build "${IG[@]}" initial_gcc || exit 1
+IG=("${G[@]}" --jobs=1 --make_target_all=skip --make_target_install="install-gcc install-target-libgcc")
+b/build_toolchain build "${IG[@]}" initial_gcc || exit 1
 b/build_toolchain build "${G[@]}" linux_headers || exit 1
 b/build_toolchain build "${G[@]}" musl || exit 1
 b/build_toolchain build "${G[@]}" gcc || exit 1
