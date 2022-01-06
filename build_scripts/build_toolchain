@@ -1636,7 +1636,7 @@ function build_component() {
 	expat/*)
 	    F=( "${F[@]}" "${H[@]}" "--enable-shared" "--disable-nls" ) ;;
 	ncurses/*)
-	    F=( "${F[@]}" "${H[@]}" "--disable-shared" "--disable-nls" )
+	    F=( "${F[@]}" "${H[@]}" "--disable-nls" )
 	    F=( "${F[@]}" "--with-terminfo-dirs=/usr/share/terminfo" )
 	    F=( "${F[@]}" "--without-ada" "--without-tests" )
 	    case $host in
@@ -1646,7 +1646,11 @@ function build_component() {
 			grep -e $src/VERSION | cut -f 2 | grep -e '[6-9]\.[0-9]\+'
 			if [ $? -eq 0 ]; then
 			    F=( "${F[@]}" "--with-shared" "--with-cxx-shared" )
+			else
+			    F=( "${F[@]}" "--disable-shared" )
 			fi
+		    else
+			F=( "${F[@]}" "--disable-shared" )
 		    fi
 		    F=( "${F[@]}" "--enable-sp-funcs" "--enable-term-driver" )
 		    F=( "${F[@]}" "--disable-db-install" )
