@@ -1430,8 +1430,11 @@ function build_component() {
 	    if [ "x$buildlibs" != "x" ]; then
 	      export TEXMFHOME=$buildlibs/share/tex/texmf
 	    fi
-	    export CC_FOR_BUILD=x86_64-pc-linux-gnu-gcc
-	    export CXX_FOR_BUILD=x86_64-pc-linux-gnu-g++
+	    if [ "x$host" != "x$build_triple" ]; then
+		export CC_FOR_BUILD=$build_triple"-gcc"
+		export CXXFLAGS_FOR_BUILD="-static"
+		export CXX_FOR_BUILD=$build_triple"-g++"
+	    fi
 	    F=( "${F[@]}" "${H[@]}" "${GCC_FLAGS[@]}" "--target=$target" )
 	    if [ "$gcc_arch" != "" ] ; then
 		F=( "${F[@]}" "--with-arch=$gcc_arch" )
@@ -1447,9 +1450,9 @@ function build_component() {
 	    fi
 	    F=( "${F[@]}"  "--with-static-standard-libraries" )
 	    if [ "$local_build_version" = "initial" ] ; then
-		MAKE_TARGET_PRE="all-gcc install-gcc"
-		MAKE_TARGET_ALL="all-target-libgcc all-target-libstdc++-v3" inhibit_libc=true
-		MAKE_TARGET_INSTALL="install-target-libgcc install-target-libstdc++-v3"
+		MAKE_TARGET_COMMON="inhibit_libc=true"
+		MAKE_TARGET_ALL="all-gcc all-target-libgcc"
+		MAKE_TARGET_INSTALL="install-gcc install-target-libgcc"
 		F=( "${F[@]}" "--disable-libquadmath" "--disable-libatomic" )
 		case $target in
 		    i686*-linux-* | x86_64*-linux-*)
@@ -1825,7 +1828,7 @@ function build_component() {
     	i=1
     	for t in $MAKE_TARGET_ALL;do
     	    inst=$( echo $MAKE_TARGET_INSTALL | cut -d\  -f $i )
-    	    do_make $component $build_directory $t inhibit_libc=true
+	    do_make $component $build_directory "$t $MAKE_TARGET_COMMON"
     	    check_return make $?
     	    do_make $component $build_directory $inst
     	    check_return make $?
