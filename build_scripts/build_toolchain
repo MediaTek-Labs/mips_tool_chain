@@ -1548,17 +1548,21 @@ function build_component() {
 	    MAKE_TARGET_ALL="all-gdb"
 	    MAKE_TARGET_INSTALL="install-gdb" ;;
 	qemu/*)
+	    # Override libtool and pkg-config as we don't tend to have
+	    # cross-prefix versions of these.
+	    export LIBTOOL=libtool
+	    export PKG_CONFIG=pkg-config
+	    export PKG_CONFIG_PATH=$hostlibs/lib/pkgconfig:$PKG_CONFIG_PATH
 	    # Need disable-werror because linux-user/signal.c has
 	    # #warning lines about signal handling not implemented
 	    # for n32, n64 ABIs.
-	    export PKG_CONFIG_PATH=$hostlibs/lib/pkgconfig/
 	    T=( "--disable-tools" "--disable-werror" )
 	    T=( "${T[@]}" "--disable-smartcard-nss" "--disable-smartcard" )
 	    T=( "${T[@]}" "--disable-pie" "--disable-vnc" "--disable-curses" )
 	    T=( "${T[@]}" "--disable-virtfs" "--disable-sdl" "--disable-gtk" )
 	    T=( "${T[@]}" "--disable-libssh2" "--disable-curl" "--disable-bluez" )
 	    T=( "${T[@]}" "--disable-bzip2" "--disable-libxml2" "--disable-vhost-user" )
-	    T=( "${T[@]}" "--disable-gcrypt" "--disable-libusb" )
+	    T=( "${T[@]}" "--disable-gcrypt" "--disable-libusb" "--ninja=$buildlibs/bin/ninja" )
 	    if [ -f $hostlibs/bin/python ]; then
 		T=( "${T[@]}" "--python=$hostlibs/bin/python" )
 	    elif [ -f $prefix/python-root/bin/python ]; then
@@ -1576,11 +1580,6 @@ function build_component() {
 	    if [ "x$hostlibs" != "x" ]; then
 	      F=( "${F[@]}" "${T[@]}" "--extra-ldflags=-L$hostlibs/lib" "--extra-cflags=-I$hostlibs/include"  )
 	    fi
-	    # Override libtool and pkg-config as we don't tend to have
-	    # cross-prefix versions of these.
-	    export LIBTOOL=libtool
-	    export PKG_CONFIG=pkg-config
-	    export PKG_CONFIG_DIR=$hostlibs/lib/pkgconfig
 	    if [ "$host" != "" ]; then
 	      F=( "${F[@]}" "--static" "--cross-prefix=${host}-" )
 	    fi
