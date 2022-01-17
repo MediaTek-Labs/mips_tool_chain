@@ -1588,14 +1588,14 @@ function build_component() {
 	    # #warning lines about signal handling not implemented
 	    # for n32, n64 ABIs.
 	    T=( "--disable-tools" "--disable-werror" )
-	    T=( "${T[@]}" "--disable-smartcard-nss" "--disable-smartcard" )
+	    T=( "${T[@]}" "--disable-smartcard" )
 	    T=( "${T[@]}" "--disable-pie" "--disable-vnc" "--disable-curses" )
 	    T=( "${T[@]}" "--disable-virtfs" "--disable-sdl" "--disable-gtk" )
-	    T=( "${T[@]}" "--disable-libssh2" "--disable-curl" "--disable-bluez" )
+	    T=( "${T[@]}" "--disable-curl" )
 	    T=( "${T[@]}" "--disable-bzip2" "--disable-libxml2" "--disable-vhost-user" )
 	    T=( "${T[@]}" "--disable-gcrypt" "--disable-libusb" "--ninja=$buildlibs/bin/ninja" )
 	    T=( "${T[@]}" "--meson=$buildlibs/bin/meson.pyz" )
-	    T=( `check_qemu_configure "$CONFIGURE" "${T[@]}"` )
+	   # T=( `check_qemu_configure "$CONFIGURE" "${T[@]}"` )
 	    if [ "x$hostlibs" != "x" ]; then
 	      F=( "${F[@]}" "${T[@]}" "--extra-ldflags=-L$hostlibs/lib" "--extra-cflags=-I$hostlibs/include"  )
 	    fi
