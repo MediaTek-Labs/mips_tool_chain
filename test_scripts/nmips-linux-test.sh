@@ -58,7 +58,7 @@ for cfg in "${configs[@]}"; do
     mkdir $name
     pushd $name
     rm -Rf *
-    PATH=$TOOLCHAIN/bin:$HOSTTOOLS/bin:$SRCDIR/dejagnu:$PATH HOSTCC=x86_64-pc-linux-gnu-gcc DEJAGNU_SIM_OPTIONS="-r 4.5.0"  DEJAGNU_SIM=$TOOLCHAIN/bin/qemu-nanomips DEJAGNU_SIM_GCC=$TOOLCHAIN/bin/nanomips-linux-musl-gcc $SRCDIR/gcc/contrib/test_installed.gcc"$$" --without-gfortran --without-objc --without-g++ --with-gcc=$TOOLCHAIN/bin/nanomips-linux-musl-gcc --prefix=$TOOLCHAIN --target=nanomips-linux-musl --target_board=$cfg -v -v -v &> test.log &
+    PATH=$TOOLCHAIN/bin:$HOSTTOOLS/bin:$SRCDIR/dejagnu:$PATH HOSTCC=x86_64-pc-linux-gnu-gcc DEJAGNU_SIM_OPTIONS="-r 4.5.0 -cpu nanomips-generic"  DEJAGNU_SIM=$TOOLCHAIN/bin/qemu-nanomips DEJAGNU_SIM_GCC=$TOOLCHAIN/bin/nanomips-linux-musl-gcc $SRCDIR/gcc/contrib/test_installed.gcc"$$" --without-gfortran --without-objc --without-g++ --with-gcc=$TOOLCHAIN/bin/nanomips-linux-musl-gcc --prefix=$TOOLCHAIN --target=nanomips-linux-musl --target_board=$cfg -v -v -v &> test.log &
     popd
 done
 fi
@@ -75,7 +75,7 @@ for cfg in "${configs[@]}"; do
     pushd $name
     rm -Rf *
 
-    PATH=$TOOLCHAIN/bin:$HOSTTOOLS/bin:$SRCDIR/dejagnu:$PATH HOSTCC=x86_64-pc-linux-gnu-gcc DEJAGNU_SIM_OPTIONS="-r 4.5.0" DEJAGNU_SIM=$TOOLCHAIN/bin/qemu-nanomips DEJAGNU_SIM_GCC=$TOOLCHAIN/bin/nanomips-linux-musl-gcc $SRCDIR/gcc/contrib/test_installed.g++"$$" --without-gfortran --without-objc --without-gcc --with-g++=$TOOLCHAIN/bin/nanomips-linux-musl-g++ --prefix=$TOOLCHAIN --target=nanomips-linux-musl --target_board=$cfg -v -v -v &> test.log &
+    PATH=$TOOLCHAIN/bin:$HOSTTOOLS/bin:$SRCDIR/dejagnu:$PATH HOSTCC=x86_64-pc-linux-gnu-gcc DEJAGNU_SIM_OPTIONS="-r 4.5.0 -cpu nanomips-generic" DEJAGNU_SIM=$TOOLCHAIN/bin/qemu-nanomips DEJAGNU_SIM_GCC=$TOOLCHAIN/bin/nanomips-linux-musl-gcc $SRCDIR/gcc/contrib/test_installed.g++"$$" --without-gfortran --without-objc --without-gcc --with-g++=$TOOLCHAIN/bin/nanomips-linux-musl-g++ --prefix=$TOOLCHAIN --target=nanomips-linux-musl --target_board=$cfg -v -v -v &> test.log &
     popd
 done
 fi
