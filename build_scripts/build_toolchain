@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 # -----------------------------------------------------------------------------
 # Copyright (c) 2020, MIPS Tech LLC.
@@ -1634,7 +1634,7 @@ function build_component() {
 	    esac
 	    ;;
 	expat/*)
-	    F=( "${F[@]}" "${H[@]}" "--enable-shared" "--disable-nls" ) ;;
+	    F=( "${F[@]}" "${H[@]}" "--disable-shared" "--disable-nls" ) ;;
 	ncurses/*)
 	    F=( "${F[@]}" "${H[@]}" "--disable-nls" )
 	    F=( "${F[@]}" "--with-terminfo-dirs=/usr/share/terminfo" )
@@ -1642,16 +1642,7 @@ function build_component() {
 	    case $host in
 		*-*-mingw*)
 		    export CFLAGS="$CFLAGS -static-libgcc -Wl,--enable-auto-import"
-		    if [ -e $src/VERSION ]; then
-			grep -e $src/VERSION | cut -f 2 | grep -e '[6-9]\.[0-9]\+'
-			if [ $? -eq 0 ]; then
-			    F=( "${F[@]}" "--with-shared" "--with-cxx-shared" )
-			else
-			    F=( "${F[@]}" "--disable-shared" )
-			fi
-		    else
-			F=( "${F[@]}" "--disable-shared" )
-		    fi
+		    F=( "${F[@]}" "--with-shared" "--with-cxx-shared" )
 		    F=( "${F[@]}" "--enable-sp-funcs" "--enable-term-driver" )
 		    F=( "${F[@]}" "--disable-db-install" )
 		    F=( "${F[@]}" "--with-build-cc=x86_64-pc-linux-gnu-gcc" )
@@ -1667,11 +1658,11 @@ function build_component() {
 	glib/*)
 	    export CC_FOR_BUILD=x86_64-pc-linux-gnu-gcc
 	    export CXX_FOR_BUILD=x86_64-pc-linux-gnu-g++
-	    case $host in
-		*-*-mingw*)
-		    CFLAGS="$CFLAGS -Wl,--enable-auto-import -lucrt"
-		    ;;
-	    esac
+# 	    case $host in
+# 		*-*-mingw*)
+# #		    CFLAGS="$CFLAGS -Wl,--enable-auto-import -lucrt"
+# 		    ;;
+# 	    esac
 	    if [ "x$hostlibs" != "x" ]; then
 		export PKG_CONFIG_PATH=$hostlibs/lib/pkgconfig/
 		# Some libraries are not picked up via pkgconfig so add the host
@@ -1705,7 +1696,7 @@ function build_component() {
 	libiconv/*)
 	    F=( "${F[@]}" "${H[@]}" "--disable-shared" "--enable-static" ) ;;
 	libffi/*)
-	    F=( "${F[@]}" "${H[@]}" "--enable-shared" "--enable-static" )
+	    F=( "${F[@]}" "${H[@]}" "--disable-shared" "--enable-static" )
 	    F=(  "${F[@]}" "--libdir=$prefix/lib" ) ;;
 	openssl/*)
 	    CONFIGURE=$src/Configure
@@ -1733,6 +1724,7 @@ function build_component() {
 		    F=( "${F[@]}" "-DCMAKE_RC_COMPILER=${host}-windres" )
 		    F=( "${F[@]}" "-DBUILD_SHARED_LIBS=FALSE" "-DUNIX=1" )
 		    F=( "${F[@]}" "-DCMAKE_INSTALL_PREFIX=$prefix" "$src" )
+		    sed -i 's/^check_type_size/#check_type_size/' $src/CMakeLists.txt
 		    ;;
 		*)
 		    if [ ! -d $build_directory ]; then
