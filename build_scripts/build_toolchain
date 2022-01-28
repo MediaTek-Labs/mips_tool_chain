@@ -1423,7 +1423,7 @@ function build_component() {
 	    touch $src/intl/plural.c
 	    F=( "${F[@]}" "${H[@]}" "${GCC_FLAGS[@]}" "--target=$target" "--with-newlib" )
 	    F=( "${F[@]}" "--with-gnu-as" "--with-gnu-ld" )
-	    F=( "${F[@]}" "--enable-newlib-mb" "--enable-newlib-io-c99-formats" )
+	    F=( "${F[@]}" "--enable-newlib-io-c99-formats" )
 	    if [ "$local_build_version" = "initial" ] ; then
 		MAKE_TARGET_ALL="all-gcc"
 		MAKE_TARGET_INSTALL="install-gcc"
