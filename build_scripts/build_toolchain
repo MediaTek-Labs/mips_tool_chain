@@ -1697,7 +1697,7 @@ function build_component() {
 	libiconv/*)
 	    F=( "${F[@]}" "${H[@]}" "--disable-shared" "--enable-static" ) ;;
 	libffi/*)
-	    F=( "${F[@]}" "${H[@]}" "--disable-shared" "--enable-static" )
+	    F=( "${F[@]}" "${H[@]}" "--enable-shared" "--enable-static" )
 	    F=(  "${F[@]}" "--libdir=$prefix/lib" ) ;;
 	openssl/*)
 	    CONFIGURE=$src/Configure
