@@ -131,7 +131,7 @@ for target in ["nanomips-elf", "nanomips-linux-musl"]:
 
   ret = subprocess.call(["setfacl", "-R", "-m", "o:rX", install_dir])
   if ret != 0:
-    ret = subprocess.call(["chmod", "-R", "o+rX", install_dir)
+    ret = subprocess.call(["chmod", "-R", "o+rX", install_dir])
   if ret != 0:
     print("WARNING: unable to grant read-access to %s" % install_dir)
 
