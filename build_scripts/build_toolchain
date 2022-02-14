@@ -374,6 +374,9 @@ function check_src() {
 	    git_args=""
 	    branch_name=`find_list_entry "$name" "${branch_list[@]}"`
 	    if [ "x${git_ref}" != "x" -a -d "${git_ref}" ]; then
+		if [ ! -f ${git_ref}/config -a -f ${git_ref}/${srcrepo}".git"/config ]; then
+		    git_ref=${git_ref}/${srcrepo}".git"
+		fi
 		git_args="$git_args --reference=$git_ref"
 	    fi
 	    if [ "${branch_name}" != "" ] ; then
