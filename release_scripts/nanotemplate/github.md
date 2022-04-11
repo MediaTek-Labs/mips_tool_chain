@@ -1,5 +1,5 @@
-# [![MTK Logo](https://cdn-www.mediatek.com/icons/mtklogo.svg)](https://www.mediatek.com) &nbsp;&nbsp; nanoMIPS GNU toolchain v2022.03-01
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Published on March 21, 2022
+# [![MTK Logo](https://cdn-www.mediatek.com/icons/mtklogo.svg)](https://www.mediatek.com) &nbsp;&nbsp; nanoMIPS GNU toolchain v2022.00-01-trial-1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Published on April 11, 2022
 
 * [Introduction](#introduction)
 * [Release Notes](#release-notes)
@@ -24,36 +24,25 @@ The nanoMIPS Toolchain includes example code, source code, and documentation to 
 
 ## Release Notes
 #### New Features
-
-* Update GCC from v6.3.0 to v11.2.0
-** GCC now defaults to GNU C17 for compiling C code and to C++17 for compiling C++ code.
-** GCC now defaults to DWARF version 5 for debug information structures, excluding line tables. Support libraries are still built with `-gdwarf-4` to maintain compatibility with the rest of the toolchain.
-** GCC now defaults to `-fno-common`.  Multiple tentative definitions result in errors at link stage.
-** GCC now preserves auxiliary debug information created by the language front-end when doing LTO which increases final debug information size but eases debugging experience.
-** A new `nanomips-elf-lto-dump` has been added. It dumps various information about LTO byte-code object files.
-** Various enhancements to existing GCC warnings as well the introduction of the new ones enabled by default as `-Wignored-attributes`, `-Wshift-count-negative`, `-Wstringop-*`, `-Wfree-nonheap-object` and `-Wbuiltin-declaration-mismatch`.
-* Update binutils from v2.29 to v2.37
-* Update newlib from v2.5.0 to v4.2.0
-* Update qemu from v2.5 to v6.2.0
+* GNU assembler support for all ThorV2 instructions, enabled by the assembler command-line option `-march=thorv2`.
+* Compiler support for for all ThorV2 instructions, enabled by the assembler command-line option `-march=thorv2`.
+* GDB/simulator support for all ThorV2 instructions, enabled by the command-line option `--architecture=nanomips:thorv2`.
+* QEMU support for all ThorV2 instructions, enabled by the command-line option `-cpu THORV2`.
+*Rules for assembly syntax of hardware loop instructions (LOOP/LOOPI)
+** Loop body should be at least 1 instruction and at most 16 instructions wide.
+** Loops cannot contain other branches, any other relocated instructions or macros that expand in to multiple instructions.
 
 
 #### Bug Fixes
 
-* C99 inlining semantics is now properly implemented by the GCC. Non-static functions having `inline` keyword that do not end up inlined by the GCC, require out of line definition and can cause missing symbol errors at the link stage if one is not provided in another object file. Proper fix in most cases is to apply `static` keyword to such functions.
-
-
 #### Other Changes
 
-* Internal LTO format has changed. LTO object files created with the prior versions of the toolchain cannot be linked with this release.
-
-
 #### Known issues
+* QEMU can currently only handle at most 150 iterations of the LOOP instruction in call cases. For larger loop counts, qemu will either crash or fail to terminate.
+* Due to the QEMU issue, regression testing of this toolchain build is limited to GDBSim. Testing shows slightly different pass rate as compared to previous releases due
+to differences in the capabilities of QEMU and GDBSim.
+* The nanomips-linux toolchain is only regression tested with QEMU, so it has not been tested for this build.
 
-* The `-fstack-check` feature is not supported.
-* The `-mfunc-opt-list` does not support `noipa` attribute.
-* Dereferencing a pointer explicitly marked with aligned attribute less than the pointer's natural alignment, may produce unaligned access at runtime if passed as argument to a function.
-
-Refer to the [upstream release notes for GCC 11.2](https://gcc.gnu.org/gcc-11/changes.html) for more details.
 
 
 <div id="documentation"></div>
@@ -92,30 +81,30 @@ Refer to the [upstream release notes for GCC 11.2](https://gcc.gnu.org/gcc-11/ch
 |Variant  |Size|Checksum|
 |:--------|:---|:-------|
 |**Bare Metal Toolchain**|||
-|[Linux x64](../../releases/download/nanoMIPS-2022.03-01/MediaTek.GNU.Tools.2022.03-01.for.nanoMIPS.Bare.Metal.CentOS-6.x86_64.tar.gz) (.tar.gz)|[168M]|md5: 16abf95c4909d7d187392ebc6c32e2c4<br/>sha256: 72b700af37e6be7c92a5dc5e9a12f9236023a09866292b93253a956fc9204286|
-|[Windows 64](../../releases/download/nanoMIPS-2022.03-01/MediaTek.GNU.Tools.2022.03-01.for.nanoMIPS.Bare.Metal.Windows.x86_64.tar.gz) (.tar.gz)|[122M]|md5: eb5d860f121987a9d11065c395266681<br/>sha256: 2358613dca04daea05cb732a53521f91796199ba76519d4b88417f18d0b33e7f|
-|[Linux x86](../../releases/download/nanoMIPS-2022.03-01/MediaTek.GNU.Tools.2022.03-01.for.nanoMIPS.Bare.Metal.CentOS-6.x86.tar.gz) (.tar.gz)|[171M]|md5: f21d3316650fb3431981c002312a03d0<br/>sha256: 68c05ac1522dc2c2c64a645b1f490460812ba607bc51a7d144587c6a41b60b23|
-|[Windows x86](../../releases/download/nanoMIPS-2022.03-01/MediaTek.GNU.Tools.2022.03-01.for.nanoMIPS.Bare.Metal.Windows.x86.tar.gz) (.tar.gz)|[118M]|md5: 764ba0045137afa06dd88d1b3b678f8e<br/>sha256: 8951a500da066b375e747a7e819e0832c4fce44b615dbd3fe02d980b59e79b55|
+|[Linux x64](../../releases/download/nanoMIPS-2022.00-01-trial-1/MediaTek.GNU.Tools.2022.00-01-trial-1.for.nanoMIPS.Bare.Metal.CentOS-6.x86_64.tar.gz) (.tar.gz)|[187M]|md5: bc27dbf1589da3ad849c44c63a5a909b<br/>sha256: 37bccccda6cb5b25be7644cdadbd6c1a7b59c77756237c8cedbd5fcf1f8f9bb8|
+|[Windows 64](../../releases/download/nanoMIPS-2022.00-01-trial-1/MediaTek.GNU.Tools.2022.00-01-trial-1.for.nanoMIPS.Bare.Metal.Windows.x86_64.tar.gz) (.tar.gz)|[141M]|md5: df20a27e2a0aba626e909d432798eebf<br/>sha256: 92b5e267732c9c99d2b2580d6db41072acecebb69cb05e12535b1e4a17c7608b|
+|[Linux x86](../../releases/download/nanoMIPS-2022.00-01-trial-1/MediaTek.GNU.Tools.2022.00-01-trial-1.for.nanoMIPS.Bare.Metal.CentOS-6.x86.tar.gz) (.tar.gz)|[192M]|md5: ed8560c4102e9d23ee486f7f7ebb4b52<br/>sha256: 1f37e623d23f8782f9df58377fbb106fcbcb3815e38df5fd980c7f8a5ae58401|
+|[Windows x86](../../releases/download/nanoMIPS-2022.00-01-trial-1/MediaTek.GNU.Tools.2022.00-01-trial-1.for.nanoMIPS.Bare.Metal.Windows.x86.tar.gz) (.tar.gz)|[137M]|md5: e4d1ad24ea422f486f2a0b2a3fc7b8f9<br/>sha256: 60ea4fb2f99893315fa985c4d44b92b8941214e3ac0f46809b330da3b62d01ec|
  |**MUSL/Linux Toolchain**|||
-|[Linux x64](../../releases/download/nanoMIPS-2022.03-01/MediaTek.GNU.Tools.2022.03-01.for.nanoMIPS.Linux.CentOS-6.x86_64.tar.gz) (.tar.gz)|[184M]|md5: 6bb0b8a36b53762441cd5c16878b6fd0<br/>sha256: 26dc4cc9b81d652757e6543f9c3c1f1932a3611e337a6727610c74de8750327e|
-|[Windows 64](../../releases/download/nanoMIPS-2022.03-01/MediaTek.GNU.Tools.2022.03-01.for.nanoMIPS.Linux.Windows.x86_64.tar.gz) (.tar.gz)|[147M]|md5: 9a2576852dda88e3724d297a833e1dc5<br/>sha256: b906c0bd0b624ae7ed5770a3d8da71cb302bde44baa88ce1a7a1c8eae9d917ec|
-|[Linux x86](../../releases/download/nanoMIPS-2022.03-01/MediaTek.GNU.Tools.2022.03-01.for.nanoMIPS.Linux.CentOS-6.x86.tar.gz) (.tar.gz)|[186M]|md5: 6859e59668b92ae644bd595712ec8d2a<br/>sha256: 8f487b3016ac8c18e0acf3f5620f4428e255a470dda009c88f9af7d9f21d7f19|
-|[Windows x86](../../releases/download/nanoMIPS-2022.03-01/MediaTek.GNU.Tools.2022.03-01.for.nanoMIPS.Linux.Windows.x86.tar.gz) (.tar.gz)|[142M]|md5: 38fd8ae3b0d16519aef947a8d2d8b093<br/>sha256: 8b0aa8d4750af234e08ff544cf1ea1ca426b8dd266990a9c41c60c1467f0683d|
+|[Linux x64](../../releases/download/nanoMIPS-2022.00-01-trial-1/MediaTek.GNU.Tools.2022.00-01-trial-1.for.nanoMIPS.Linux.CentOS-6.x86_64.tar.gz) (.tar.gz)|[207M]|md5: cb43a64d367da61e410d810d8b612703<br/>sha256: 9bcf3066e359227fa3a9a96fb5777dd8fc00fd33cca1af0554b6d25cfb92acf0|
+|[Windows 64](../../releases/download/nanoMIPS-2022.00-01-trial-1/MediaTek.GNU.Tools.2022.00-01-trial-1.for.nanoMIPS.Linux.Windows.x86_64.tar.gz) (.tar.gz)|[183M]|md5: 08c51eaaf5881138d551af17c3948cae<br/>sha256: 1345490db2f539a9b7fb4af4e4e74c44a21356f2c4a6bab4f2ccb31487337c96|
+|[Linux x86](../../releases/download/nanoMIPS-2022.00-01-trial-1/MediaTek.GNU.Tools.2022.00-01-trial-1.for.nanoMIPS.Linux.CentOS-6.x86.tar.gz) (.tar.gz)|[210M]|md5: de2682cd1ef0f679a02939fb3c05b442<br/>sha256: 0a3473145eced2772a0e82cbe4d33c5048f409f55610b3e56d9f2f41f4c90b8d|
+|[Windows x86](../../releases/download/nanoMIPS-2022.00-01-trial-1/MediaTek.GNU.Tools.2022.00-01-trial-1.for.nanoMIPS.Linux.Windows.x86.tar.gz) (.tar.gz)|[178M]|md5: 4392daaea9cf30fa0bde46cfb6d787fd<br/>sha256: 13cd2acebb087bd907984d2c598b15c7ecebe4d7856f5fbc0a81519730d6dd49|
 
 
 #### Source Components
 |Component|Size|Checksum|
 |:--------|:---|:-------|
-|[binutils-2022.03-01.src.tar.gz](../../releases/download/nanoMIPS-2022.03-01/binutils-2022.03-01.src.tar.gz)|[51M]|md5: 9c534173e7323807548babed97cf225e<br/>sha256: eb825018b62e70e666ea2a9abdb35c7354e5abf5229137d6496c173647e57bb6|
-|[gdb-2022.03-01.src.tar.gz](../../releases/download/nanoMIPS-2022.03-01/gdb-2022.03-01.src.tar.gz)|[51M]|md5: f24202cf90d1aae0912eed36432291f7<br/>sha256: 142102f6c5c8a372b641c7ef97ef3386d97acc5080ac2b7f4540955c3820ab89|
-|[gold-2022.03-01.src.tar.gz](../../releases/download/nanoMIPS-2022.03-01/gold-2022.03-01.src.tar.gz)|[52M]|md5: 90ccdd0fd2c7fde03cf58be032c2a58e<br/>sha256: 0e324dad66f26bd09bdac0cfb7a1eddf42da634f5abd3b2063d220f719ba1ba8|
-|[newlib-2022.03-01.src.tar.gz](../../releases/download/nanoMIPS-2022.03-01/newlib-2022.03-01.src.tar.gz)|[21M]|md5: b6bec7cb08f9dd7b456672b6d82d083a<br/>sha256: 89e71a1053b84df54f7e10d65f3355671f79859d2b97fe3e3a3037e6f9d89ebd|
-|[gcc-2022.03-01.src.tar.gz](../../releases/download/nanoMIPS-2022.03-01/gcc-2022.03-01.src.tar.gz)|[119M]|md5: e1163f1a2032a0ed1799460fd953c1f4<br/>sha256: bae9cf646817ca999db4ef4e2a5929a46abdf0b007a196c1a050228ad5879aad|
-|[smallclib-2022.03-01.src.tar.gz](../../releases/download/nanoMIPS-2022.03-01/smallclib-2022.03-01.src.tar.gz)|[1M]|md5: 6e907b59949edbb0bbc72e1339ae4dcd<br/>sha256: 83bb6d15a13a9354a924ad7fbd7ae1e919cc5be003944108a8a88323dedc9b03|
-|[qemu-2022.03-01.src.tar.gz](../../releases/download/nanoMIPS-2022.03-01/qemu-2022.03-01.src.tar.gz)|[90M]|md5: 4f22a3d705255a13edc5145e4d2c74df<br/>sha256: 7d896e824ab64d0608e62731e36778d23a0d89420485245218e153fa7fa87bac|
-|[musl-2022.03-01.src.tar.gz](../../releases/download/nanoMIPS-2022.03-01/musl-2022.03-01.src.tar.gz)|[1M]|md5: 3f4d763384966fc243e3b0ebeb3cd5bf<br/>sha256: 25127ad0737fad18eb2713c67f04db6ec4aefe2a3281c83e66932fe2381bcf7c|
-|[packages-2022.03-01.src.tar.gz](../../releases/download/nanoMIPS-2022.03-01/packages-2022.03-01.src.tar.gz)|[192M]|md5: 1fba8e5f262cb60800142a9735d2ac5d<br/>sha256: e227b97c9ba16781559feba47e03d98c17dd169d30fd6769d318f8bec18f46bd|
-|[python-2022.03-01.src.tar.gz](../../releases/download/nanoMIPS-2022.03-01/python-2022.03-01.src.tar.gz)|[22M]|md5: 307abaaa75bd376ba1f43cb4e7162f7c<br/>sha256: 8f2206a574854320c1c49d20225b5df3ad673ea673afc2d0d8c098509232138c|
+|[binutils-2022.00-01-trial-1.src.tar.gz](../../releases/download/nanoMIPS-2022.00-01-trial-1/binutils-2022.00-01-trial-1.src.tar.gz)|[51M]|md5: 20d7f9505895e26bdfaf060152b0aed8<br/>sha256: a04270406a819f52cef3fcab4591f8052b09b905012d86ba5724f16246e20b20|
+|[gdb-2022.00-01-trial-1.src.tar.gz](../../releases/download/nanoMIPS-2022.00-01-trial-1/gdb-2022.00-01-trial-1.src.tar.gz)|[51M]|md5: 4a0532bf8be8236c3e6710a585810ba1<br/>sha256: 07c251539bf8559246cec8d36c4e0e568916161fe9dd69c8129d0a279961913d|
+|[gold-2022.00-01-trial-1.src.tar.gz](../../releases/download/nanoMIPS-2022.00-01-trial-1/gold-2022.00-01-trial-1.src.tar.gz)|[52M]|md5: 958cecb091740dc9d5cb0f039f4d74a6<br/>sha256: 15c726887e536f54d8cce15aa0e3eb635997fc41accaf9beb80cf22917d75a98|
+|[newlib-2022.00-01-trial-1.src.tar.gz](../../releases/download/nanoMIPS-2022.00-01-trial-1/newlib-2022.00-01-trial-1.src.tar.gz)|[21M]|md5: ccdd8e32841b6a03d750b04926ea9df6<br/>sha256: 88a15d56b827717498fc77baa163951f7f86eef0e3665548b1cc09b95bd4f25e|
+|[gcc-2022.00-01-trial-1.src.tar.gz](../../releases/download/nanoMIPS-2022.00-01-trial-1/gcc-2022.00-01-trial-1.src.tar.gz)|[119M]|md5: 7c028a57eb7e2e7c4fdbcec32799affd<br/>sha256: f36ef0e5d19064cfdf2816ac53ca8c56acf3b89895cc373b37f789eeb05fb168|
+|[smallclib-2022.00-01-trial-1.src.tar.gz](../../releases/download/nanoMIPS-2022.00-01-trial-1/smallclib-2022.00-01-trial-1.src.tar.gz)|[1M]|md5: 676841c1983fef1073bd9c947389349e<br/>sha256: cd9e4ffca589bdc3a595160cb8dc84a16a662e10731b9443a572f6ddd517a6d0|
+|[qemu-2022.00-01-trial-1.src.tar.gz](../../releases/download/nanoMIPS-2022.00-01-trial-1/qemu-2022.00-01-trial-1.src.tar.gz)|[90M]|md5: 733c13e5bc8891345000aff1fd0bfbba<br/>sha256: e52f699dd59542f78b9403c423d0b5f15b2f1da30a7b9252ba39f82037147576|
+|[musl-2022.00-01-trial-1.src.tar.gz](../../releases/download/nanoMIPS-2022.00-01-trial-1/musl-2022.00-01-trial-1.src.tar.gz)|[1M]|md5: cbda8407d1b3693238949e454bff540b<br/>sha256: 8193b6d4964aad218b43240ec40dc9ee3067bfe7cf0b50fb99ec54572acf9d69|
+|[packages-2022.00-01-trial-1.src.tar.gz](../../releases/download/nanoMIPS-2022.00-01-trial-1/packages-2022.00-01-trial-1.src.tar.gz)|[192M]|md5: 1996abc6291a4d168c935b565fb178b1<br/>sha256: 6f924ff85361a1fdab499b47954e12bacf15549fb3c552e4969d5155423b2fcb|
+|[python-2022.00-01-trial-1.src.tar.gz](../../releases/download/nanoMIPS-2022.00-01-trial-1/python-2022.00-01-trial-1.src.tar.gz)|[22M]|md5: 97904445280af9d0ce09359933530578<br/>sha256: 2023770ce66576998f8e56261e5b2f9f978e5b65e0a7810a7ba0fc01dc9135a9|
 
 
 <div id="bug-reporting"></div>
