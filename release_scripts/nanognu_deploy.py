@@ -12,6 +12,7 @@ import pwd
 import urllib
 import urllib.request
 import urllib.error
+import socket
 from string import Template
 
 # check python version
@@ -85,10 +86,10 @@ for target in ["nanomips-elf", "nanomips-linux-musl"]:
   if os.path.isdir(install_dir) or os.path.isfile(linkpath):
     rd=input("Warning: Toolkit already deployed at %s. delete/redeploy? [D/R]: " % install_dir).lower().strip()
     print ("Deleting " + install_dir)
-    ret=subprocess.call(["ssh", user + "@localhost", "rm", "-rf", install_dir], env=my_env)
+    ret=subprocess.call(["ssh", user + "@" + socket.gethostname(), "rm", "-rf", install_dir], env=my_env)
     if os.path.islink(linkpath):
       print ("Deleting " + linkpath)
-      ret=subprocess.call(["ssh", user + "@localhost", "rm", "-f", linkpath], env=my_env)
+      ret=subprocess.call(["ssh", user + "@" + socket.gethostname(), "rm", "-f", linkpath], env=my_env)
     if rd[:1] == 'd':
       continue
 
@@ -110,14 +111,14 @@ for target in ["nanomips-elf", "nanomips-linux-musl"]:
       f.write(u.read())
       f.close()
 
-  ret = subprocess.call(["setfacl", "-m", "u:%s:r" % user, tarball])
+  ret = subprocess.call(["setfacl", "-m", "o:rX", tarball])
   if ret != 0:
     ret = subprocess.call(["chmod", "o+r", tarball])
   if ret != 0:
-    print("WARNING: unable to grant read-access to %s, continuing with install anyway")
+    print("WARNING: unable to grant read-access to %s, continuing with install anyway" % tarball)
 
   print("Installing %s toolchain v%s" % (target, version))
-  extractcmd = ["ssh", user + "@localhost", "tar", "-x", "-C",
+  extractcmd = ["ssh", user + "@" + socket.gethostname(), "tar", "-x", "-C",
                 install_path, "--strip-components=1", "-f",
                 os.path.join (os.getcwd(), tarball)]
   ret=subprocess.call(extractcmd, env=my_env)
@@ -129,21 +130,23 @@ for target in ["nanomips-elf", "nanomips-linux-musl"]:
     print ("Deployed %s toolchain to %s" % (target_to_name[target], install_path))
     os.remove(tarball)
 
-  ret = subprocess.call(["setfacl", "-R", "-m", "o:rX", install_dir])
+  ret = subprocess.call(["ssh", user + "@" + socket.gethostname(),
+                         "setfacl", "-R", "-m", "o:rX", install_dir], env=my_env)
   if ret != 0:
-    ret = subprocess.call(["chmod", "-R", "o+rX", install_dir])
+    ret = subprocess.call(["ssh", user + "@" + socket.gethostname(),
+                           "chmod", "-R", "o+rX", install_dir], env=my_env)
   if ret != 0:
     print("WARNING: unable to grant read-access to %s" % install_dir)
 
   rootmodule=os.path.join("/mtkoss", "Thor", "gcc-elf", "2019.03-07", "2019.03-07")
   versionmodule=os.path.join("/mtkoss", "Thor", "gcc-%s" % target.split('-')[1], version, version)
-  cmd = ["ssh", user + "@localhost", "cp", rootmodule, versionmodule]
+  cmd = ["ssh", user + "@" + socket.gethostname(), "cp", rootmodule, versionmodule]
   ret=subprocess.call(cmd, env=my_env)
   linkpath=os.path.join("/mtkoss", "Modules", "3.2.6", "x86_64", "modulefiles", "Thor",
         "gcc-%s" % target.split('-')[1], version)
   linktarget=os.path.join("..", "..", "..", "..", "..", "..", "Thor",
         "gcc-%s" % target.split('-')[1], version, version)
-  cmd = ["ssh", user + "@localhost", "ln", "-s", linktarget, linkpath]
+  cmd = ["ssh", user +  "@" + socket.gethostname(), "ln", "-s", linktarget, linkpath]
   ret=subprocess.call(cmd, env=my_env)
   if ret != 0:
     print ("ERROR: Failed to link %s -> %s" % (linkpath, linktarget))
@@ -152,7 +155,7 @@ for target in ["nanomips-elf", "nanomips-linux-musl"]:
     print ("%s -> %s " %  (linkpath, linktarget))
   linkpath=os.path.join("/mtkoss", "Thor", "gcc-%s" % target.split('-')[1], version, "linux")
   linktarget=os.path.join("..",  version)
-  cmd = ["ssh", user + "@localhost", "ln", "-s", linktarget, linkpath]
+  cmd = ["ssh", user + "@" + socket.gethostname(), "ln", "-s", linktarget, linkpath]
   ret=subprocess.call(cmd, env=my_env)
   if ret != 0:
     print ("ERROR: Failed to link %s -> %s" % (linkpath, linktarget))
