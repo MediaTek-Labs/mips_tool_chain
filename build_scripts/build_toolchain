@@ -107,6 +107,8 @@ else
     Q_EXEC=""
 fi
 
+echo $#
+
 # Searches for the first argument within the list that follows.
 # value=`find_list_entry "gcc" "foo:bar" "gcc:moo"` would return 'moo'.
 # If the argument is not found then we return an empty string.
@@ -584,30 +586,34 @@ function do_make() {
     local make_args="$3"
     local make_jobs=""
 
-    if [ $jobs -gt 1 ] ; then
-      if [ "$component_name" = "glibc" ]; then
-        make_args="$make_args PARALLELMFLAGS=--jobs=$jobs"
-      else
-        make_jobs="--jobs=$jobs --load-average=$jobs"
-      fi
-    fi
-    if [ "$preview" = "yes" ] ; then
-      echo "cd $objdir"
-      echo "make $make_jobs $make_args"
+    if [ "x$component_name" = "xllvm" ]; then 
+	cmake --build $objdir $make_args -j $jobs
     else
-      if [ "$make_args" != "" ] ; then
-	if [ ! -d $objdir ] ; then
-	  echo "Error: Cannot run make in $objdir, does not exist."
-	  exit 1
+	if [ $jobs -gt 1 ] ; then
+	    if [ "$component_name" = "glibc" ]; then
+		make_args="$make_args PARALLELMFLAGS=--jobs=$jobs"
+	    else
+		make_jobs="--jobs=$jobs --load-average=$jobs"
+	    fi
 	fi
-	(
-	  cd $objdir
-	  echo "CD: cd $objdir"
-	  echo "MAKE: make $make_jobs $make_args"
-	  $Q_EXEC make $make_jobs $make_args || exit 1
-	)
-	return $?
-      fi
+	if [ "$preview" = "yes" ] ; then
+	    echo "cd $objdir"
+	    echo "make $make_jobs $make_args"
+	else
+	    if [ "$make_args" != "" ] ; then
+		if [ ! -d $objdir ] ; then
+		    echo "Error: Cannot run make in $objdir, does not exist."
+		    exit 1
+		fi
+		(
+		    cd $objdir
+		    echo "CD: cd $objdir"
+		    echo "MAKE: make $make_jobs $make_args"
+		    $Q_EXEC make $make_jobs $make_args || exit 1
+		)
+		return $?
+	    fi
+	fi
     fi
 }
 
@@ -1788,12 +1794,34 @@ function build_component() {
 	    F=( "${F[@]}" "--without-guile")
 	    ;;
         llvm/*|clang/*|llvm_multilibs/*)
-            SCRIPT_DIR=$(cd $(dirname "$BASH_SOURCE") && pwd)
-            source "${SCRIPT_DIR}/llvm_utils"
+	    CONFIGURE=cmake
+	    host_gcc_path=$(dirname $(dirname $( which ${host}-gcc ) ) )
+	    
+	    F=( "${F[@]}" "-G" "Ninja" )
+	    F=( "${F[@]}"  "-DCMAKE_C_COMPILER=${host}-gcc" )
+	    F=( "${F[@]}"  "-DCMAKE_CXX_COMPILER=${host}-g++" )
+            F=( "${F[@]}"  "-DLLVM_TARGETS_TO_BUILD=Mips" )
+            F=( "${F[@]}"  "-DLLVM_ENABLE_PROJECTS=clang" )
+            F=( "${F[@]}"  "-DLLVM_TARGET_ARCH=nanomips" )
+            F=( "${F[@]}"  "-DCMAKE_BUILD_TYPE=Release" )
+            F=( "${F[@]}"  "-DLLVM_DEFAULT_TARGET_TRIPLE=$target" )
+            F=( "${F[@]}"  "-DLLVM_ENABLE_ASSERTIONS=OFF" ) 
+            F=( "${F[@]}"  "-DLLVM_ENABLE_TERMINFO=OFF" ) 
+            F=( "${F[@]}"  "-DCMAKE_INSTALL_PREFIX=$prefix" )
+            F=( "${F[@]}"  "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-rpath,"$host_gcc_path"/lib64" )
+            F=( "${F[@]}"  "-DCMAKE_SHARED_LINKER_FLAGS=-Wl,-rpath,"$host_gcc_path"/lib64" )
+            F=( "${F[@]}"  "-DLLVM_LINK_LLVM_DYLIB=ON" )
+#               F=( "${F[@]}"  "-DLLVM_VERSION_STRING=" + version_string
+	    F=( "${F[@]}"  "-S" $src )
+            F=( "${F[@]}"  "-B" $bld_dir/llvm )
 
-            build_llvm_component $component $target
-            check_return build_llvm_component $?
-            return ;;
+	    MAKE_TARGET_ALL=""
+	    MAKE_TARGET_INSTALL="--target install"
+#            SCRIPT_DIR=$(cd $(dirname "$BASH_SOURCE") && pwd)
+#            source "${SCRIPT_DIR}/llvm_utils"
+#            build_llvm_component $component $target
+#            check_return build_llvm_component $?
+            ;;
 	symlinks/*)
 	    CONFIGURE=""
 	    cp -a $src $bld_dir/
