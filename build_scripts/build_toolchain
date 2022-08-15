@@ -1185,11 +1185,11 @@ function find_python () {
 	    fi
 	    ;&
 	*)
-	    which python3 &> /dev/null
+	    PATH=$PATH which python3 &> /dev/null
 	    if [ $? -ne 0 ]; then
 		echo "Error: could not find usable python3 in path"
 	    fi
-	    which python3
+	    PATH=$PATH which python3
 	    ;;
     esac
 }
