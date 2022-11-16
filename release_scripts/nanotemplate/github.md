@@ -1,5 +1,5 @@
-# [![MTK Logo](https://cdn-www.mediatek.com/icons/mtklogo.svg)](https://www.mediatek.com) &nbsp;&nbsp; nanoMIPS GNU toolchain v2022.11-01
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Published on November 11, 2022
+# [![MTK Logo](https://cdn-www.mediatek.com/icons/mtklogo.svg)](https://www.mediatek.com) &nbsp;&nbsp; nanoMIPS GNU toolchain v2022.10-01
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Published on November 16, 2022
 
 * [Introduction](#introduction)
 * [Release Notes](#release-notes)
@@ -80,30 +80,30 @@ The nanoMIPS Toolchain includes example code, source code, and documentation to 
 |Variant  |Size|Checksum|
 |:--------|:---|:-------|
 |**Bare Metal Toolchain**|||
-|[Linux x64](../../releases/download/nanoMIPS-2022.11-01/MediaTek.GNU.Tools.2022.11-01.for.nanoMIPS.Bare.Metal.CentOS-6.x86_64.tgz) (.tgz)|[188M]|md5: fc2f2bc846c21651efe14d14cea4df32<br/>sha256: c1367e12f9b737fb9ebad14d2bfa82f4449385824ef7c542b0c19a7c5b184175|
-|[Windows 64](../../releases/download/nanoMIPS-2022.11-01/MediaTek.GNU.Tools.2022.11-01.for.nanoMIPS.Bare.Metal.Windows.x86_64.tgz) (.tgz)|[143M]|md5: a54f1ac2eab4cc63ebc03d912ca13ff4<br/>sha256: c6a12b03a8bb6c0e54903d4008bacd0fa5ad79443aefbe737d0297aceed67968|
-|[Linux x86](../../releases/download/nanoMIPS-2022.11-01/MediaTek.GNU.Tools.2022.11-01.for.nanoMIPS.Bare.Metal.CentOS-6.x86.tgz) (.tgz)|[194M]|md5: 6fb94cc91b70a32840bd369e1235349d<br/>sha256: d0f35afedbaea493f492b44f2255abcea452d0b732e9b2c8c7190848ffb63cdb|
-|[Windows x86](../../releases/download/nanoMIPS-2022.11-01/MediaTek.GNU.Tools.2022.11-01.for.nanoMIPS.Bare.Metal.Windows.x86.tgz) (.tgz)|[139M]|md5: afb2de4ce01647db5990e058a4dec08e<br/>sha256: d6fd7e43cf5abbcbd67a1f1a7e09d3222b3f879fd0c0e2d18edbab8a04eda599|
+|[Linux x64](../../releases/download/nanoMIPS-2022.10-01/MediaTek.GNU.Tools.2022.10-01.for.nanoMIPS.Bare.Metal.CentOS-6.x86_64.tgz) (.tgz)|[188M]|md5: bff51e538127965382d9bfd76ee24ce1<br/>sha256: 6468bea3de5d2faf52eb51fecf12be27c01cb323002f5f3882a2cc6d0a138c37|
+|[Windows 64](../../releases/download/nanoMIPS-2022.10-01/MediaTek.GNU.Tools.2022.10-01.for.nanoMIPS.Bare.Metal.Windows.x86_64.tgz) (.tgz)|[143M]|md5: 9351eb98e4f79ea2b8eebc185c03a146<br/>sha256: 05ea077095ff99e9396e5714f77c24501a8d5d33f3eb9f8fe39b12044b566b27|
+|[Linux x86](../../releases/download/nanoMIPS-2022.10-01/MediaTek.GNU.Tools.2022.10-01.for.nanoMIPS.Bare.Metal.CentOS-6.x86.tgz) (.tgz)|[194M]|md5: 9fe6698294efac594da39be474dfd823<br/>sha256: a237a13b36ee606544c73d35da2abd370d4174437835b45eb9e5000e9436b780|
+|[Windows x86](../../releases/download/nanoMIPS-2022.10-01/MediaTek.GNU.Tools.2022.10-01.for.nanoMIPS.Bare.Metal.Windows.x86.tgz) (.tgz)|[139M]|md5: 85bf72757b804c743e3b3583068f95dd<br/>sha256: f273297a5dedbaa9da3d058d3274d3d7f06583427c64ce0e7a0695b64c3aa6b5|
  |**MUSL/Linux Toolchain**|||
-|[Linux x64](../../releases/download/nanoMIPS-2022.11-01/MediaTek.GNU.Tools.2022.11-01.for.nanoMIPS.Linux.CentOS-6.x86_64.tgz) (.tgz)|[207M]|md5: 736aeec22f9f116fef7e86af5219c815<br/>sha256: e8f093130ad3704b7ad91f547142e64f7a12d717fb6f894acdeffc45e30f974f|
-|[Windows 64](../../releases/download/nanoMIPS-2022.11-01/MediaTek.GNU.Tools.2022.11-01.for.nanoMIPS.Linux.Windows.x86_64.tgz) (.tgz)|[183M]|md5: 5eccbda333e3b65f5878ae54906c8560<br/>sha256: 6d6d3fecc95a38363a0b1b5060863274031dc2e07742f5f6b23bc57b073c0710|
-|[Linux x86](../../releases/download/nanoMIPS-2022.11-01/MediaTek.GNU.Tools.2022.11-01.for.nanoMIPS.Linux.CentOS-6.x86.tgz) (.tgz)|[210M]|md5: 65c7ffdbc06d87c65d785fea62c58918<br/>sha256: be33d29ae029f9ccb25123e7b68883d61d2412c9202badb6a4d8beb8ad121a86|
-|[Windows x86](../../releases/download/nanoMIPS-2022.11-01/MediaTek.GNU.Tools.2022.11-01.for.nanoMIPS.Linux.Windows.x86.tgz) (.tgz)|[178M]|md5: 94d5ad5bb88d4fe12c69beceb9cdff5d<br/>sha256: ad643b886a1804260942e983b3c4226f819e03d6d80ea93336dfe9022d5ea9bd|
+|[Linux x64](../../releases/download/nanoMIPS-2022.10-01/MediaTek.GNU.Tools.2022.10-01.for.nanoMIPS.Linux.CentOS-6.x86_64.tgz) (.tgz)|[207M]|md5: 6f3b5b7948f8ff3c09ac65ad044aa8df<br/>sha256: 63497c13244ba157555e76b15ec755810d4bfd2b72c70c71aa0acbdec1ab53e0|
+|[Windows 64](../../releases/download/nanoMIPS-2022.10-01/MediaTek.GNU.Tools.2022.10-01.for.nanoMIPS.Linux.Windows.x86_64.tgz) (.tgz)|[183M]|md5: 43153e23e1ae8a3c7350dc71b99b3fcf<br/>sha256: 7f40d1be1c98047b6aecb9ef1f09079aed12ff0f5cb08274ad397599ffb900ac|
+|[Linux x86](../../releases/download/nanoMIPS-2022.10-01/MediaTek.GNU.Tools.2022.10-01.for.nanoMIPS.Linux.CentOS-6.x86.tgz) (.tgz)|[210M]|md5: c8d43c488301698ab69f34445563764b<br/>sha256: 00add67cd98c777d89b609f3b0f97c985a135c6e542f182810cf031498e00232|
+|[Windows x86](../../releases/download/nanoMIPS-2022.10-01/MediaTek.GNU.Tools.2022.10-01.for.nanoMIPS.Linux.Windows.x86.tgz) (.tgz)|[178M]|md5: 23e2e652c0929b2840f5e876f4a81e39<br/>sha256: a0573a915b018d2d3bed3b7a45ec056b88861c072ccffe34ad028a416588df01|
 
 
 #### Source Components
 |Component|Size|Checksum|
 |:--------|:---|:-------|
-|[binutils-2022.11-01.src.tgz](../../releases/download/nanoMIPS-2022.11-01/binutils-2022.11-01.src.tgz)|[51M]|md5: 70be67e5acfed97224e4d64ac717735c<br/>sha256: 9ceb4bf978f985254c6931dc565c23a19dbc366a0fde61b4739be3cd08ce1668|
-|[gdb-2022.11-01.src.tgz](../../releases/download/nanoMIPS-2022.11-01/gdb-2022.11-01.src.tgz)|[51M]|md5: aac2d6e2f5298d1aaaba0bccac7bcc0c<br/>sha256: b2444f45563233bd563d7f50b26066df028a3b3d9b6fd2899d89189b23684748|
-|[gold-2022.11-01.src.tgz](../../releases/download/nanoMIPS-2022.11-01/gold-2022.11-01.src.tgz)|[52M]|md5: 268d5118a8aaa377682b0330c97112b7<br/>sha256: 92d20a30ac0bf8bf771ed038acb90290b1e5f8a162d5ee8cf3775f1a8731cd2d|
-|[newlib-2022.11-01.src.tgz](../../releases/download/nanoMIPS-2022.11-01/newlib-2022.11-01.src.tgz)|[21M]|md5: e6a6f0d5a148443ac455402fd9567aa8<br/>sha256: 0446d4135b7fd050fee56c0b85d18b02a21f83f195bf6099f5347eb1ef61d46e|
-|[gcc-2022.11-01.src.tgz](../../releases/download/nanoMIPS-2022.11-01/gcc-2022.11-01.src.tgz)|[119M]|md5: 146ce77dded586cc3404887e4e5db05f<br/>sha256: 6420a5e87ad45f21051909b3f9c7974b318a92fed7d1abe0fb9eb08cd1d4b5d9|
-|[smallclib-2022.11-01.src.tgz](../../releases/download/nanoMIPS-2022.11-01/smallclib-2022.11-01.src.tgz)|[1M]|md5: a4de77087753978d0f98d59e1a37ba7c<br/>sha256: 841b0e201239caf0641d71a26156b22db1398644e81e315dd12f7c9f5925511c|
-|[qemu-2022.11-01.src.tgz](../../releases/download/nanoMIPS-2022.11-01/qemu-2022.11-01.src.tgz)|[90M]|md5: 6703b48d688ceafdc6d23b3bfaa22cd6<br/>sha256: 1b71395e470b68cd21e8118a9d3187d306a87c063c3b5891c75a554df61a87ba|
-|[musl-2022.11-01.src.tgz](../../releases/download/nanoMIPS-2022.11-01/musl-2022.11-01.src.tgz)|[1M]|md5: 764aa41d3a30c5f0488870a8817a7b29<br/>sha256: fb1746249be8fb41333c638b780aacd5dc68b8ef1b43fc24a5333893c744a42d|
-|[packages-2022.11-01.src.tgz](../../releases/download/nanoMIPS-2022.11-01/packages-2022.11-01.src.tgz)|[192M]|md5: b1ec31027e18b464af71c52fab8133b0<br/>sha256: dde0789bd56cb7c46054149a5f0e77d07bdb5333f030dd4622bf25ee1de7c86f|
-|[python-2022.11-01.src.tgz](../../releases/download/nanoMIPS-2022.11-01/python-2022.11-01.src.tgz)|[22M]|md5: c8cf068f6534f8a1c33dad12b96128e8<br/>sha256: bcb302821efc57832493fd84f5bee350ee3eae3d05d000c6e198ef186c297daf|
+|[binutils-2022.10-01.src.tgz](../../releases/download/nanoMIPS-2022.10-01/binutils-2022.10-01.src.tgz)|[51M]|md5: 9fb8bae0c3aeaa4334fc6fc1b32bea1c<br/>sha256: 5780443347cf8a6082d30045c562fff3626a24cfefafa4e992bf03dd720a6649|
+|[gdb-2022.10-01.src.tgz](../../releases/download/nanoMIPS-2022.10-01/gdb-2022.10-01.src.tgz)|[51M]|md5: 8bbd3226c01d5cb7976184076343a34f<br/>sha256: 77b6aa2dd9573802efb3cefd9951455fa21e8fd57516020d246b2c7db24501f9|
+|[gold-2022.10-01.src.tgz](../../releases/download/nanoMIPS-2022.10-01/gold-2022.10-01.src.tgz)|[52M]|md5: 35ea62d9d295377ee34ff42b5f7e7c63<br/>sha256: f981e3aa951c6bde85cc10c972f2e4d6ec5547db86b7068faad08c87562aeb0c|
+|[newlib-2022.10-01.src.tgz](../../releases/download/nanoMIPS-2022.10-01/newlib-2022.10-01.src.tgz)|[21M]|md5: 9f813bdc70e44be5c41f05fe7f6626ea<br/>sha256: b94053c76831a603b760c8395176c3ac3b24b9718f5d1a424757f7171ca7ff20|
+|[gcc-2022.10-01.src.tgz](../../releases/download/nanoMIPS-2022.10-01/gcc-2022.10-01.src.tgz)|[119M]|md5: c18e33c18434c57cc4caf76198c5f4a9<br/>sha256: 33996158c6ce2bb1783f6880076ed1ca4049db909cf99605024d264d558706c0|
+|[smallclib-2022.10-01.src.tgz](../../releases/download/nanoMIPS-2022.10-01/smallclib-2022.10-01.src.tgz)|[1M]|md5: 452592c74548973eb3e8104fe96938cc<br/>sha256: 3cfbfe63472fc481952ba14f1ed607f8565d1227b222a6a4f8ee0d2c886fbf86|
+|[qemu-2022.10-01.src.tgz](../../releases/download/nanoMIPS-2022.10-01/qemu-2022.10-01.src.tgz)|[90M]|md5: d03e5431776548b0056e7c23edcd367d<br/>sha256: a4126436ecdc50585f36e814581156e9fc7beff35f712df988f3125d93c53fb4|
+|[musl-2022.10-01.src.tgz](../../releases/download/nanoMIPS-2022.10-01/musl-2022.10-01.src.tgz)|[1M]|md5: e7cf3d629bad44b3114a24d2889eaeac<br/>sha256: 8fe0a3b81f7542fe94e9a6853fa179b5b6ccccdf55193768093a2d70f20b64e5|
+|[packages-2022.10-01.src.tgz](../../releases/download/nanoMIPS-2022.10-01/packages-2022.10-01.src.tgz)|[192M]|md5: aafb85664e6717fda08f233da2541aec<br/>sha256: e3131afc662cbe281ad7ba49ccb1e75262bf0d768c7361e13fa9d91c9b74c4e8|
+|[python-2022.10-01.src.tgz](../../releases/download/nanoMIPS-2022.10-01/python-2022.10-01.src.tgz)|[22M]|md5: 0d20737394318d920024b757c0726e84<br/>sha256: 620806b7700cb0b964a3bd28fd0ee80c10014a2ddee8a5abe44e5c18ef5e2422|
 
 
 <div id="bug-reporting"></div>
