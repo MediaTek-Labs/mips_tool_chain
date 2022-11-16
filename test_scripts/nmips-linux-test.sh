@@ -1,10 +1,39 @@
 #!/bin/bash -x
 
-if [ -z $1 ]; then
-    DO=gcc
-else
-    DO=$1
-fi
+
+OPTS=`getopt -o s:r:c:a:t:j:h --long src:,runlist:,conf:,extra_args:,toggle_args:,jobs:,help -n 'parse options' -- "$@"`
+eval set -- "$OPTS"
+
+dry_run=0
+SRCDIR=""
+RUNLIST=gcc,g\+\+,libstdc\+\+,newlib
+EXTRA_ARGS=""
+TOGGLE_ARGS=""
+TOOLCHAIN=""
+
+
+while true ; do
+    case $1 in
+	-s|--src) SRCDIR=$2; shift 2;;
+	-r|--runlist) RUNLIST=$2; shift 2;;
+	-a|--extra_args) EXTRA_ARGS=\/${2/,/\/}; shift 2;;
+	-t|--toggle_args) TOGGLE_ARGS=\/${2/,/\/}; shift 2;;
+	-j|--jobs) JOB_MAX=$2; shift 2;;
+	-h|--help)
+	    echo "$0 <opts,...> <toolchain_path>"
+	    echo "Options:"
+	    echo "	--src=<path_to_checked_out_sources>"
+	    echo "	--runlist=gcc,g++,libstdc++,newlib"
+	    echo "	--extra_args=<extra_cflags_for_test>"
+	    echo "	--jobs=<max number of parallel test runs>"
+	    echo "	--help		Print this message"
+	    shift; exit; break;;
+	--) TOOLCHAIN=$2; break;;
+	*)  echo "Unrecognized option, try $0 --help";
+	    exit 1
+	    break;;
+    esac
+done
 
 if [ -z $2 ]; then
     TOOLCHAIN=/projects/mipssw/toolchains/nanomips-linux-musl/2019.03-01

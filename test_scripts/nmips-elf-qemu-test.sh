@@ -1,12 +1,13 @@
 #!/bin/bash -x
 
-OPTS=`getopt -o s:r:c:a:j:h --long src:,runlist:,conf:,extra_args:,jobs:,help -n 'parse options' -- "$@"`
+OPTS=`getopt -o s:r:c:a:t:j:h --long src:,runlist:,conf:,extra_args:,toggle_args:,jobs:,help -n 'parse options' -- "$@"`
 eval set -- "$OPTS"
 
 dry_run=0
 SRCDIR=""
 RUNLIST=gcc,g\+\+,libstdc\+\+,newlib
 EXTRA_ARGS=""
+TOGGLE_ARGS=""
 TOOLCHAIN=""
 
 while true ; do
@@ -14,6 +15,7 @@ while true ; do
 	-s|--src) SRCDIR=$2; shift 2;;
 	-r|--runlist) RUNLIST=$2; shift 2;;
 	-a|--extra_args) EXTRA_ARGS=\/${2/,/\/}; shift 2;;
+	-t|--toggle_args) TOGGLE_ARGS=\/${2/,/\/}; shift 2;;
 	-j|--jobs) JOB_MAX=$2; shift 2;;
 	-h|--help)
 	    echo "$0 <opts,...> <toolchain_path>"
@@ -68,7 +70,7 @@ if [ -z $JOB_MAX ]; then
     fi
 fi
 
-HOSTTOOLS=${HOSTTOOLSROOT:-/projects/mipssw/toolchains/}x86_64-pc-linux-gnu/4.9.4-centos6
+HOSTTOOLS=${HOSTTOOLSROOT:-/projects/mipssw/toolchains/}x86_64-pc-linux-gnu/10.2.0-centos6
 
 declare -a configs
 configs=(
@@ -83,7 +85,9 @@ configs=(
     "generic-sim/-m32/-EL/-msoft-float/-mcmodel=large/-mno-gpopt"
     "generic-sim/-m32/-EL/-msoft-float/-mno-gpopt/-mno-pcrel"
     "generic-sim/-m32/-EL/-msoft-float/-mcmodel=medium/-mno-gpopt/-mno-pcrel"
-    "generic-sim/-m32/-EL/-msoft-float/-mcmodel=large/-mno-gpopt/-mno-pcrel")
+    "generic-sim/-m32/-EL/-msoft-float/-mcmodel=large/-mno-gpopt/-mno-pcrel"
+)
+
 jobs=""
 
 # manipulate the test_installed script to generate a modified site.exp
@@ -95,6 +99,9 @@ declare -a jqueue
 
 if [[ $RUNLIST =~ gcc ]]; then
     for cfg in "${configs[@]}"; do
+	if [ "x$EXTRA_ARGS" != "x" ]; then
+	    cfg="$cfg/$EXTRA_ARGS"
+	fi
 	name="gcc_"`echo ${cfg#*/} | tr -d - | tr -d =  | tr / _`
 	mkdir $name
 	pushd $name
@@ -103,15 +110,20 @@ if [[ $RUNLIST =~ gcc ]]; then
 	if [ $jcount -gt $JOB_MAX ]; then
 	    wait ${jqueue[$((jcount - JOB_MAX))]}
 	fi
-	DEJAGNU_SIM_LDSCRIPT="-Tuhi32.ld" DEJAGNU_SIM_LINK_FLAGS="-Wl,--defsym,__memory_size=32M" DEJAGNU_SIM_OPTIONS="-cpu nanomips-generic -semihosting -nographic -kernel"  DEJAGNU_SIM=$TOOLCHAIN/bin/qemu-system-nanomips PATH=$TOOLCHAIN/bin:$HOSTTOOLS/bin:$SRCDIR/dejagnu:$PATH $SRCDIR/gcc/contrib/test_installed.gcc"$$" --without-gfortran --without-objc --without-g++ --with-gcc=$TOOLCHAIN/bin/nanomips-elf-gcc --prefix=$TOOLCHAIN --target=nanomips-elf --target_board=$cfg -v -v -v $4 &> test.log &
+	if [[ $cfg =~ thorv2 ]]; then
+	    DEJAGNU_SIM_OPTIONS="-cpu THORV2 -semihosting -nographic -kernel"
+	else
+	    DEJAGNU_SIM_OPTIONS="-cpu I7200 -semihosting -nographic -kernel"
+	fi
+	DEJAGNU_SIM_LDSCRIPT="-Tuhi32.ld" DEJAGNU_SIM_LINK_FLAGS="-Wl,--defsym,__memory_size=32M" DEJAGNU_SIM_OPTIONS=$DEJAGNU_SIM_OPTIONS DEJAGNU_SIM=$TOOLCHAIN/bin/qemu-system-nanomips PATH=$TOOLCHAIN/bin:$HOSTTOOLS/bin:$SRCDIR/dejagnu:$PATH $SRCDIR/gcc/contrib/test_installed.gcc"$$" --without-gfortran --without-objc --without-g++ --with-gcc=$TOOLCHAIN/bin/nanomips-elf-gcc --prefix=$TOOLCHAIN --target=nanomips-elf --target_board=$cfg -v -v -v $4 &> test.log &
 	jqueue+=( $! )
 	popd > /dev/null
     done
 fi
 
 configs+=(
-    "mips-sim-mti32/-m32/-EL/-msoft-float/-mno-gpopt/-fno-rtti/-fno-exceptions"
-    "mips-sim-mti32/-m32/-EL/-msoft-float/-mno-gpopt/-fno-rtti/-fno-exceptions/-nortti-libstdc++"
+    "generic-sim/-m32/-EL/-msoft-float/-mno-gpopt/-fno-rtti/-fno-exceptions"
+    "genesim-sim/-m32/-EL/-msoft-float/-mno-gpopt/-fno-rtti/-fno-exceptions/-nortti-libstdc++"
 )
 
 # manipulate the test_installed script to generate a modified site.exp
@@ -120,6 +132,9 @@ chmod +x $SRCDIR/gcc/contrib/test_installed.g++"$$"
 
 if [[ $RUNLIST =~ g\+\+ ]]; then
     for cfg in "${configs[@]}"; do
+	if [ "x$EXTRA_ARGS" != "x" ]; then
+	    cfg="$cfg/$EXTRA_ARGS"
+	fi
 	name="gxx_"`echo ${cfg#*/} | tr -d - | tr -d =  | tr / _`
 	mkdir $name
 	pushd $name
@@ -128,8 +143,12 @@ if [[ $RUNLIST =~ g\+\+ ]]; then
 	if [ $jcount -gt $JOB_MAX ]; then
 	    wait ${jqueue[$((jcount - JOB_MAX))]}
 	fi
-
-	DEJAGNU_SIM_LDSCRIPT="-Tuhi32.ld" DEJAGNU_SIM_LINK_FLAGS="-Wl,--defsym,__memory_size=32M" DEJAGNU_SIM_OPTIONS="-cpu nanomips-generic -semihosting -nographic -kernel"  DEJAGNU_SIM=$TOOLCHAIN/bin/qemu-system-nanomips PATH=$TOOLCHAIN/bin:$HOSTTOOLS/bin:$SRCDIR/dejagnu:$PATH $SRCDIR/gcc/contrib/test_installed.g++"$$" --without-gfortran --without-objc --without-gcc --with-g++=$TOOLCHAIN/bin/nanomips-elf-g++ --prefix=$TOOLCHAIN --target=nanomips-elf --target_board=$cfg -v -v -v  $4 &> test.log &
+	if [[ $cfg =~ thorv2 ]]; then
+	    DEJAGNU_SIM_OPTIONS="-cpu THORV2 -semihosting -nographic -kernel"
+	else
+	    DEJAGNU_SIM_OPTIONS="-cpu I7200 -semihosting -nographic -kernel"
+	fi
+	DEJAGNU_SIM_LDSCRIPT="-Tuhi32.ld" DEJAGNU_SIM_LINK_FLAGS="-Wl,--defsym,__memory_size=32M" DEJAGNU_SIM_OPTIONS=$DEJAGNU_SIM_OPTIONS DEJAGNU_SIM=$TOOLCHAIN/bin/qemu-system-nanomips PATH=$TOOLCHAIN/bin:$HOSTTOOLS/bin:$SRCDIR/dejagnu:$PATH $SRCDIR/gcc/contrib/test_installed.g++"$$" --without-gfortran --without-objc --without-gcc --with-g++=$TOOLCHAIN/bin/nanomips-elf-g++ --prefix=$TOOLCHAIN --target=nanomips-elf --target_board=$cfg -v -v -v  $4 &> test.log &
 	jqueue+=( $! )
 	popd > /dev/null
     done
@@ -151,6 +170,10 @@ sed -i 's|^exit 0$|runtest --tool libstdc++ ${1+"$@"}\nexit 0|g' $SRCDIR/gcc/con
 chmod +x $SRCDIR/gcc/contrib/test_installed.libstdc++"$$"
 if [[ $RUNLIST =~ libstdc\+\+ ]]; then
     for cfg in "${configs[@]}"; do
+	if [ "x$EXTRA_ARGS" != "x" ]; then
+	    cfg="$cfg/$EXTRA_ARGS"
+	fi
+
 	name="libstdcxx_"`echo ${cfg#*/} | tr -d - | tr -d =  | tr / _`
 
 	mkdir $name
@@ -160,8 +183,13 @@ if [[ $RUNLIST =~ libstdc\+\+ ]]; then
 	if [ $jcount -gt $JOB_MAX ]; then
 	    wait ${jqueue[$((jcount - JOB_MAX))]}
 	fi
+	if [[ $cfg =~ thorv2 ]]; then
+	    DEJAGNU_SIM_OPTIONS="-cpu THORV2 -semihosting -nographic -kernel"
+	else
+	    DEJAGNU_SIM_OPTIONS="-cpu I7200 -semihosting -nographic -kernel"
+	fi
 
-	DEJAGNU_SIM_LDSCRIPT="-Tuhi32.ld" DEJAGNU_SIM_LINK_FLAGS="-Wl,--defsym,__memory_size=32M" DEJAGNU_SIM_OPTIONS="-cpu nanomips-generic -semihosting -nographic -kernel"  DEJAGNU_SIM=$TOOLCHAIN/bin/qemu-system-nanomips  PATH=$TOOLCHAIN/bin:$HOSTTOOLS/bin:$SRCDIR/dejagnu:$PATH $SRCDIR/gcc/contrib/test_installed.libstdc++"$$" --without-gfortran --without-objc --without-gcc --without-g++ --prefix=$TOOLCHAIN --target=nanomips-elf --target_board=$cfg -v -v -v  $4 &> test.log &
+	DEJAGNU_SIM_LDSCRIPT="-Tuhi32.ld" DEJAGNU_SIM_LINK_FLAGS="-Wl,--defsym,__memory_size=32M" DEJAGNU_SIM_OPTIONS=$DEJAGNU_SIM_OPTIONS DEJAGNU_SIM=$TOOLCHAIN/bin/qemu-system-nanomips  PATH=$TOOLCHAIN/bin:$HOSTTOOLS/bin:$SRCDIR/dejagnu:$PATH $SRCDIR/gcc/contrib/test_installed.libstdc++"$$" --without-gfortran --without-objc --without-gcc --without-g++ --prefix=$TOOLCHAIN --target=nanomips-elf --target_board=$cfg -v -v -v  $4 &> test.log &
 	jqueue+=( $! )
 	popd > /dev/null
     done
@@ -185,6 +213,9 @@ sed -i 's|^exit 0$|runtest --tool newlib ${1+"$@"}\nexit 0|g' $SRCDIR/gcc/contri
 chmod +x $SRCDIR/gcc/contrib/test_installed.newlib"$$"
 if [[ $RUNLIST =~ newlib ]]; then
     for cfg in "${configs[@]}"; do
+	if [ "x$EXTRA_ARGS" != "x" ]; then
+	    cfg="$cfg/$EXTRA_ARGS"
+	fi
 	name="newlib_"`echo ${cfg#*/} | tr -d - | tr -d =  | tr / _`
 
 	mkdir $name
@@ -194,9 +225,15 @@ if [[ $RUNLIST =~ newlib ]]; then
 	if [ $jcount -gt $JOB_MAX ]; then
 	    wait ${jqueue[$((jcount - JOB_MAX))]}
 	fi
+	if [[ $cfg =~ thorv2 ]]; then
+	    DEJAGNU_SIM_OPTIONS="-cpu THORV2 -semihosting -nographic -kernel"
+	else
+	    DEJAGNU_SIM_OPTIONS="-cpu I7200 -semihosting -nographic -kernel"
+	fi
+
 	# Needed for header-check in newlib.locale/UTF-8 test
 	ln -s $TOOLCHAIN/nanomips-elf/include targ-include
-	DEJAGNU_SIM_LDSCRIPT="-Tuhi32.ld" DEJAGNU_SIM_LINK_FLAGS="-Wl,--defsym,__memory_size=32M" DEJAGNU_SIM_OPTIONS="-cpu nanomips-generic -semihosting -nographic -kernel"  DEJAGNU_SIM=$TOOLCHAIN/bin/qemu-system-nanomips PATH=$TOOLCHAIN/bin:$HOSTTOOLS/bin:$SRCDIR/dejagnu:$PATH $SRCDIR/gcc/contrib/test_installed.newlib"$$" --without-gfortran --without-objc --without-gcc --without-g++ --prefix=$TOOLCHAIN --target=nanomips-elf --target_board=$cfg -v -v -v  $4 &> test.log &
+	DEJAGNU_SIM_LDSCRIPT="-Tuhi32.ld" DEJAGNU_SIM_LINK_FLAGS="-Wl,--defsym,__memory_size=32M" DEJAGNU_SIM_OPTIONS=$DEJAGNU_SIM_OPTIONS DEJAGNU_SIM=$TOOLCHAIN/bin/qemu-system-nanomips PATH=$TOOLCHAIN/bin:$HOSTTOOLS/bin:$SRCDIR/dejagnu:$PATH $SRCDIR/gcc/contrib/test_installed.newlib"$$" --without-gfortran --without-objc --without-gcc --without-g++ --prefix=$TOOLCHAIN --target=nanomips-elf --target_board=$cfg -v -v -v  $4 &> test.log &
 	jqueue+=( $! )
 	popd > /dev/null
     done

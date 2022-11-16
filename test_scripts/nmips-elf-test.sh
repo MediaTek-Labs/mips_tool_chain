@@ -43,11 +43,6 @@ elif [ ! -d $SRCDIR ]; then
     exit 1
 fi
 
-if [[ ! $RUNLIST =~ (gcc|g\+\+)(,(gcc|g\+\+))? ]]; then
-    echo "error: must specify test to run: gcc,g++"
-    exit 1
-fi
-
 if [ "x$TOOLCHAIN" == "x" ]; then
     echo "error: must specify toolchain root"
     exit 1
