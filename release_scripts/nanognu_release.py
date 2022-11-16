@@ -63,14 +63,14 @@ if True:
       if not os.path.exists ("%s_%s.tgz" % (target, host)):
         print ("ERROR: Toolkit tarball file missing %s_%s.tgz" % (target, host))
         sys.exit(1)
-      filename = "MediaTek.GNU.Tools.%s.for.nanoMIPS.%s.%s.tar.gz" % (version, target_to_name[target], host_to_name[host])
+      filename = "MediaTek.GNU.Tools.%s.for.nanoMIPS.%s.%s.tgz" % (version, target_to_name[target], host_to_name[host])
       if os.path.exists (filename):
         print ("ERROR: Toolkit tarball destination already exists %s" % filename)
         sys.exit(1)
 
   components = ["binutils", "gdb", "gold", "newlib", "gcc", "smallclib", "qemu", "musl", "packages", "python"]
   for component in components:
-    filenameraw = "%s-%s.src.tar.gz" % (component, version)
+    filenameraw = "%s-%s.src.tgz" % (component, version)
     filename = "src/%s" % (filenameraw)
     if not os.path.exists (filename):
       print ("ERROR: source package for %s (%s) missing" % (component, filename))
@@ -79,7 +79,7 @@ if True:
   for target in ["nanomips-elf", "nanomips-linux-musl"]:
     binaries=""
     for host in ["x86_64-pc-linux-gnu", "x86_64-w64-mingw32", "i686-pc-linux-gnu", "i686-w64-mingw32"]:
-      filename = "MediaTek.GNU.Tools.%s.for.nanoMIPS.%s.%s.tar.gz" % (version, target_to_name[target], host_to_name[host])
+      filename = "MediaTek.GNU.Tools.%s.for.nanoMIPS.%s.%s.tgz" % (version, target_to_name[target], host_to_name[host])
       os.rename("%s_%s.tgz" % (target, host), filename)
       varsuffix = "%s %s" % (host_to_var[host], target_to_var[target])
       # Size in megabytes
@@ -88,7 +88,7 @@ if True:
       themd5 = md5sum(filename)
       # sha256sum
       thesha256 = sha256sum(filename)
-      binaries = (binaries + "|[%s](../../releases/download/nanoMIPS-%s/%s) (.tar.gz)|[%sM]|md5: %s<br/>sha256: %s|\n"
+      binaries = (binaries + "|[%s](../../releases/download/nanoMIPS-%s/%s) (.tgz)|[%sM]|md5: %s<br/>sha256: %s|\n"
                   % (host_to_var[host], version, filename, thesize, themd5, thesha256))
     if target is "nanomips-elf":
       elf_binaries = binaries
@@ -97,7 +97,7 @@ if True:
 
   sources = ""
   for component in components:
-    filenameraw = "%s-%s.src.tar.gz" % (component, version)
+    filenameraw = "%s-%s.src.tgz" % (component, version)
     filename = "src/%s" % (filenameraw)
     # Size in megabytes
     thesize = os.path.getsize(filename) >> 20
@@ -112,7 +112,7 @@ if True:
                % (filenameraw, version, filenameraw, thesize, themd5, thesha256))
 
   for component in components:
-    filenameraw = "%s-%s.src.tar.gz" % (component, version)
+    filenameraw = "%s-%s.src.tgz" % (component, version)
     filename = "src/%s" % (filenameraw)
     shutil.move(filename, filenameraw)
   shutil.rmtree("src")
@@ -223,7 +223,7 @@ if True:
   for target in ["nanomips-elf", "nanomips-linux-musl"]:
     install_path=os.path.join("/mtkoss", "Thor", "gcc-%s" % target.split('-')[1])
     tarball=os.path.join(rel_path, "download", "nanoMIPS-%s" % version,
-                         "MediaTek.GNU.Tools.%s.for.nanoMIPS.%s.%s.tar.gz"
+                         "MediaTek.GNU.Tools.%s.for.nanoMIPS.%s.%s.tgz"
                          % (version, target_to_name[target], host_to_name["x86_64-pc-linux-gnu"]))
     extractcmd = ["ssh", "srv_tcbuild001@localhost", "tar", "-x", "-C",
                   install_path, "--strip-components=1", "-f", tarball]
