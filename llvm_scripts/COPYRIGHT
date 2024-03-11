@@ -1,0 +1,19 @@
+Copyright (c) 2008-2023 MediaTek Inc. All Rights Reserved.
+
+This software/firmware and related documentation ("MediaTek Software") are
+protected under relevant copyright laws.
+The information contained herein is confidential and proprietary to
+MediaTek Inc. and/or its licensors.
+Except as otherwise provided in the applicable licensing terms with
+MediaTek Inc. and/or its licensors, any reproduction, modification, use or
+disclosure of MediaTek Software, and information contained herein, in whole
+or in part, shall be strictly prohibited.
+
+The MediaTek Software includes components modified by MediaTek based on LLVM
+and other open source projects, with additional copyrights and redistributed
+under other license terms.  See the file NOTICE.  Except as described
+hereunder, the contents of the NOTICE file are for informational purposes
+only and do not grant any license in the MediaTek Software.
+
+
+

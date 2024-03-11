@@ -1,0 +1,6 @@
+#!/bin/bash
+
+CMD="qemu-system-nanomips -cpu I7200 -semihosting -nographic -m 320 -serial none -monitor none -D /dev/null -kernel $1 -append '"
+shift 
+CMD="${CMD}$@'" 
+eval ${CMD}
