@@ -1,18 +1,15 @@
 #!/bin/bash
 
-buildhost=172.21.74.90
+# $1: release version, eg: 2024.01-02
+# $2: path to version.md release notes file
+# $3: path to source and binary tar-balls
 
-mkdir /c/Temp/nanomips
-pushd /c/Temp/nanomips
+GH=$HOME/usr/bin/gh
 
-rsync -av $buildhost:/worktmp/releases/download/nanoMIPS-$1/* .
-rsync -av $buildhost:/worktmp/releases/tag/nanoMIPS-$1.md .
+#$GH auth login -w
 
-gh auth login -w
-gh release create "nanoMIPS-$1" -t "nanoMIPS-$1" -F "nanoMIPS-$1.md" -R MediaTek-Labs/nanomips-gnu-toolchain 
+$GH release create "nanoMIPS-$1" -t "nanoMIPS-$1" -F $2 -R MediaTek-Labs/nanomips-gnu-toolchain
 
-for i in $( ls *.tar.gz ); do
-    gh release upload  "nanoMIPS-$1" $i -R MediaTek-Labs/nanomips-gnu-toolchain 
+for i in $( ls $3/*.tar.gz $3/*.tgz ); do 
+	$GH release upload "nanoMIPS-$1" $i  -R MediaTek-Labs/nanomips-gnu-toolchain
 done
-
-popd
