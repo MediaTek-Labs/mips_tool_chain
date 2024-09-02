@@ -1599,7 +1599,10 @@ function build_component() {
 	    T=( "${T[@]}" "--disable-bzip2" "--disable-libxml2" "--disable-vhost-user" )
 	    T=( "${T[@]}" "--disable-gcrypt" "--disable-libusb" "--ninja=$buildlibs/bin/ninja" )
 	    T=( "${T[@]}" "--meson=$buildlibs/bin/meson.pyz" )
-	   # T=( `check_qemu_configure "$CONFIGURE" "${T[@]}"` )
+	    grep -e "^2\." $src/VERSION
+	    if [ $? -eq 0 ]; then
+		T=( `check_qemu_configure "$CONFIGURE" "${T[@]}"` )
+	    fi
 	    if [ "x$hostlibs" != "x" ]; then
 	      F=( "${F[@]}" "${T[@]}" "--extra-ldflags=-L$hostlibs/lib" "--extra-cflags=-I$hostlibs/include"  )
 	    fi
