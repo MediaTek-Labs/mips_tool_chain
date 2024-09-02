@@ -1649,7 +1649,16 @@ function build_component() {
 	    case $host in
 		*-*-mingw*)
 		    export CFLAGS="$CFLAGS -static-libgcc -Wl,--enable-auto-import"
-		    F=( "${F[@]}" "--with-shared" "--with-cxx-shared" )
+                    if [ -e $src/VERSION ]; then
+                       grep -e $src/VERSION | cut -f 2 | grep -e '6\.[0-9]\+'
+                       if [ $? -eq 0 ]; then
+                           F=( "${F[@]}" "--with-shared" "--with-cxx-shared" )
+                       else
+                           F=( "${F[@]}" "--disable-shared" )
+                       fi
+                    else
+                       F=( "${F[@]}" "--disable-shared" )
+                    fi
 		    F=( "${F[@]}" "--enable-sp-funcs" "--enable-term-driver" )
 		    F=( "${F[@]}" "--disable-db-install" )
 		    F=( "${F[@]}" "--with-build-cc=x86_64-pc-linux-gnu-gcc" )
