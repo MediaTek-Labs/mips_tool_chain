@@ -72,7 +72,7 @@ gcc_abi=""
 gcc_endian=""
 gcc_enable_targets=""
 skip_pdfs="no"
-
+host_gccver="10.2.0"
 src_repos=( "glibc" "newlib" "dejagnu" "binutils:binutils-gdb" \
 	    "gdb:binutils-gdb" "gold:binutils-gdb" "binutils-gdb" "gcc" "qemu:gnutools-qemu" \
 	    "uclibc" "gmp:packages" "mpfr:packages" "mpc:packages" "linux:packages" \
@@ -173,7 +173,7 @@ function parse_args() {
     local prg=`basename "$0"`
     # If "$prg" is not added before "$@"on the getopt call,
     # the first option is ignored.
-    local opts=`getopt --name "$prg" --longoptions build_triple:,buildlibs:,host:,hostlibs:,target:,sysroot:,prefix:,path:,build:,build_subdir:,build_altdir:,source:,jobs:,src:,branch:,patch:,version:,dejagnu_sim:,dejagnu_sim_options:,dejagnu_sim_link_flags:,dejagnu_sim_ldscript:,dejagnu_remote:,dejagnu_baseboard:,extra_config_opts:,make_target_all:,make_target_install:,make_target_check:,runtestflags:,build_version:,git_home:,git_ref:,gcc_branch:,languages:,with-bugurl:,with-pkgversion:,grep_multilibs:,sysrootlayout:,with-arch:,with-abi:,with-endian:,enable-targets:,disable-multilib,preview,localgit,32bit-build,no-pdf,gccver -- "$prg" "$@"`
+    local opts=`getopt --name "$prg" --longoptions build_triple:,buildlibs:,host:,hostlibs:,target:,sysroot:,prefix:,path:,build:,build_subdir:,build_altdir:,source:,jobs:,src:,branch:,patch:,version:,dejagnu_sim:,dejagnu_sim_options:,dejagnu_sim_link_flags:,dejagnu_sim_ldscript:,dejagnu_remote:,dejagnu_baseboard:,extra_config_opts:,make_target_all:,make_target_install:,make_target_check:,runtestflags:,build_version:,git_home:,git_ref:,gcc_branch:,languages:,with-bugurl:,with-pkgversion:,grep_multilibs:,sysrootlayout:,with-arch:,with-abi:,with-endian:,enable-targets:,disable-multilib,preview,localgit,32bit-build,no-pdf,gccver: -- "$prg" "$@"`
     eval set -- "$opts"
     while true ; do
         case "$1" in
@@ -223,7 +223,7 @@ function parse_args() {
 	    --localgit) localgit="yes" ; shift 1 ;;
 	    --32bit-build) build32="yes" ; shift 1 ;;
 	    --no-pdf) skip_pdfs="yes" ; shift 1 ;;
-	    --gccver) shift 1 ;; # Ignored for now
+	    --gccver) host_gccver="$2"; shift 2 ;; # Ignored for now
 	    --) shift ; break ;;
 	    *) echo "Error: Cannot parse command line" >&2 ; exit 1 ;;
         esac
@@ -1641,7 +1641,11 @@ function build_component() {
 	    esac
 	    ;;
 	expat/*)
-	    F=( "${F[@]}" "${H[@]}" "--disable-nls" ) ;;
+	    F=( "${F[@]}" "${H[@]}" "--disable-nls" ) 
+	    case $host_gccver in
+		4.9.4) F=( "${F[@]}" "--enable-shared" ) ;;
+	    esac
+	    ;;
 	ncurses/*)
 	    F=( "${F[@]}" "${H[@]}" "--disable-nls" )
 	    F=( "${F[@]}" "--with-terminfo-dirs=/usr/share/terminfo" )
@@ -1674,11 +1678,13 @@ function build_component() {
 	glib/*)
 	    export CC_FOR_BUILD=x86_64-pc-linux-gnu-gcc
 	    export CXX_FOR_BUILD=x86_64-pc-linux-gnu-g++
-# 	    case $host in
-# 		*-*-mingw*)
-# #		    CFLAGS="$CFLAGS -Wl,--enable-auto-import -lucrt"
-# 		    ;;
-# 	    esac
+	    case $host_gccver in
+		4.9.4)
+		    case $host in
+			*-*-mingw*)
+			    CFLAGS="$CFLAGS -Wl,--enable-auto-import -lucrt";;
+		    esac;;
+	    esac
 	    if [ "x$hostlibs" != "x" ]; then
 		export PKG_CONFIG_PATH=$hostlibs/lib/pkgconfig/
 		# Some libraries are not picked up via pkgconfig so add the host
@@ -1712,7 +1718,7 @@ function build_component() {
 	libiconv/*)
 	    F=( "${F[@]}" "${H[@]}" "--disable-shared" "--enable-static" ) ;;
 	libffi/*)
-	    F=( "${F[@]}" "${H[@]}" "--enable-shared" "--enable-static" )
+	    F=( "${F[@]}" "${H[@]}" "--enable-static" "--enable-shared" )
 	    F=(  "${F[@]}" "--libdir=$prefix/lib" ) ;;
 	openssl/*)
 	    CONFIGURE=$src/Configure
