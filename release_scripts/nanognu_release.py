@@ -70,7 +70,7 @@ if True:
 
   components = ["binutils", "gdb", "gold", "newlib", "gcc", "smallclib", "qemu", "musl", "packages", "python"]
   for component in components:
-    filenameraw = "%s-%s.src.tgz" % (component, version)
+    filenameraw = "%s-%s.src.tar.gz" % (component, version)
     filename = "src/%s" % (filenameraw)
     if not os.path.exists (filename):
       print ("ERROR: source package for %s (%s) missing" % (component, filename))
@@ -97,7 +97,7 @@ if True:
 
   sources = ""
   for component in components:
-    filenameraw = "%s-%s.src.tgz" % (component, version)
+    filenameraw = "%s-%s.src.tar.gz" % (component, version)
     filename = "src/%s" % (filenameraw)
     # Size in megabytes
     thesize = os.path.getsize(filename) >> 20
@@ -112,7 +112,7 @@ if True:
                % (filenameraw, version, filenameraw, thesize, themd5, thesha256))
 
   for component in components:
-    filenameraw = "%s-%s.src.tgz" % (component, version)
+    filenameraw = "%s-%s.src.tar.gz" % (component, version)
     filename = "src/%s" % (filenameraw)
     shutil.move(filename, filenameraw)
   shutil.rmtree("src")
