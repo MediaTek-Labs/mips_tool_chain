@@ -1654,7 +1654,7 @@ function build_component() {
 		*-*-mingw*)
 		    export CFLAGS="$CFLAGS -static-libgcc -Wl,--enable-auto-import"
                     if [ -e $src/VERSION ]; then
-                       grep -e $src/VERSION | cut -f 2 | grep -e '6\.[0-9]\+'
+                       cat $src/VERSION | cut -f 2 | grep -e '6\.[0-9]\+'
                        if [ $? -eq 0 ]; then
                            F=( "${F[@]}" "--with-shared" "--with-cxx-shared" )
                        else
