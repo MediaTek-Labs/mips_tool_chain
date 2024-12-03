@@ -133,6 +133,7 @@ build_llvm_config() {
 	-B $BUILD_DIR			\
 	-DCMAKE_C_COMPILER=`which gcc`  \
 	-DCMAKE_CXX_COMPILER=`which g++`  \
+        -DLLVM_ENABLE_TERMINFO=OFF \
         -DLLVM_TARGETS_TO_BUILD="Mips"  \
         -DLLVM_TARGET_ARCH=mips         \
         -DLLVM_ENABLE_PROJECTS=llvm  || exit
