@@ -1,5 +1,5 @@
-# [![MTK Logo](https://cdn-www.mediatek.com/icons/mtklogo.svg)](https://www.mediatek.com) &nbsp;&nbsp; nanoMIPS GNU toolchain v2024.09-03
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Published on November 12, 2024
+# [![MTK Logo](https://cdn-www.mediatek.com/icons/mtklogo.svg)](https://www.mediatek.com) &nbsp;&nbsp; nanoMIPS GNU toolchain v2024.11-02
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Published on January 08, 2025
 
 * [Introduction](#introduction)
 * [Release Notes](#release-notes)
@@ -23,25 +23,16 @@ The nanoMIPS Toolchain includes example code, source code, and documentation to 
 
 ## Release Notes
 #### New Features
-* The toolchain implements a 64-bit `time_t` type to avoid the Y2K38 issue. This must be explicitly enabled by passing the flag -muse-64bit-time_t  on the compiler command line and it has the following effects:
-time_t as defined by #include <time.h> becomes 64-bit wide
-  * Compiler defines macro `__nanomips_64bit_time_t__` which user code can use to detect this condition.
-  * Library search paths in the link command get updated to use a standard C library with 64-bit time_t.
-    * Note: Link command-lines that specify an explicit search path for the C library must be manually updated!
-  * ABI Version field in the ELF header of output objects is incremented to 1 and  these objects can not be inter-linked with legacy objects that use a 32-bit time_t. A new linker option
- `-Wl,--allow-abi-mismatch`  can be used to force inter-linking with a broken time_t  ABI, if absolutely required.
-  * Objects can be inspected with `nanomips-elf-readelf -h` and those built with the work-around enabled will exhibit an incremented ABI Version (1 instead of 0).
 
 #### Bug Fixes
-
+* GOLD linker now correctly expands DSP BPOSGE32C  instruction in to 3 instructions using a trampoline, when the branch target is out of +16kB range.
+* GDB simulator(nanomips-elf-run) will clear the DSP carry bit in the DSPcontrol register when there is no carry out of ADDSC instruction. Retaining the spurious carry can affect the correctness of a subsequent ADDWC  instruction.
+* Fix encoding of DSP prepend instruction in GNU assembler.
 
 #### Other Changes
 
-
-#### Known issues
-
+#### Known Issues
 * The relocation-minimization pass in the assembler results in instructions with invalid branch targets in some cases. This pass is disabled by default and it is advisable to keep it disabled until further notice.
-
 
 <div id="documentation"></div>
 
@@ -78,21 +69,21 @@ time_t as defined by #include <time.h> becomes 64-bit wide
 |Variant  |Size|Checksum|
 |:--------|:---|:-------|
 |**Bare Metal Toolchain**|||
-|[Linux x64](../../releases/download/nanoMIPS-2024.09-03/MediaTek.GNU.Tools.2024.09-03.nanomips-elf_x86_64-pc-linux-gnu.tgz) (.tgz)|[171M]|md5: 9b9ab249a85f056c555fc261880a7b67<br/>sha256: bdf77a448612cf5bbf36da924193a1b54385782a20743de30fcfe10366db840e|
+|[Linux x64](../../releases/download/nanoMIPS-2024.11-02/MediaTek.GNU.Tools.2024.11-02.nanomips-elf_x86_64-pc-linux-gnu.tgz) (.tgz)|[170M]|md5: 50c06d9968aaa46e0ddc06852714001a<br/>sha256: 34c1301f9579d0c97c71a449f04384a365b2db0f1ef95e96f5494152e36f727e|
 
 
 #### Source Components
 |Component|Size|Checksum|
 |:--------|:---|:-------|
-|[binutils-2024.09-03.src.tgz](../../releases/download/nanoMIPS-2024.09-03/binutils-2024.09-03.src.tgz)|[51M]|md5: 0123c1c3b4609f21e97517b76ba1af54<br/>sha256: 9f940360c94f7822436f93c57d7591e6c770f5c1a72279832c820580745a99a2|
-|[gdb-2024.09-03.src.tgz](../../releases/download/nanoMIPS-2024.09-03/gdb-2024.09-03.src.tgz)|[51M]|md5: 407857b2f24bcb584c30571ed1e94bc5<br/>sha256: 812545a3c21525c36fdb4a862ec720d5c9c5324f499c9f523b1e2b4b2d717500|
-|[gold-2024.09-03.src.tgz](../../releases/download/nanoMIPS-2024.09-03/gold-2024.09-03.src.tgz)|[52M]|md5: 5589036d213ea2dcc55a5813b7f1c755<br/>sha256: 29ce33441bbb1dd7ce44cb00ecb14b70c832e6527aff3f22b48de494e11143e6|
-|[newlib-2024.09-03.src.tgz](../../releases/download/nanoMIPS-2024.09-03/newlib-2024.09-03.src.tgz)|[21M]|md5: 2b6b42a33ccbf2f93758dc369d260221<br/>sha256: 70b3ac64197f39e3069afae720592057cb75ee67f331ff8921d4afdd7b33c070|
-|[gcc-2024.09-03.src.tgz](../../releases/download/nanoMIPS-2024.09-03/gcc-2024.09-03.src.tgz)|[119M]|md5: 3a6082e1fe5d14964486b1e44989e496<br/>sha256: 49748fc93ca45de9bbd3fb733f35ae4175084de08d844747df12cab218416309|
-|[smallclib-2024.09-03.src.tgz](../../releases/download/nanoMIPS-2024.09-03/smallclib-2024.09-03.src.tgz)|[1M]|md5: 11e39d70a6d77c900536dcc3d5a2f37e<br/>sha256: 9318a678ae2a1566f35c1f5b4dc510e7f738593e5cefefc1a001995ea7b0a6e6|
-|[qemu-2024.09-03.src.tgz](../../releases/download/nanoMIPS-2024.09-03/qemu-2024.09-03.src.tgz)|[90M]|md5: 39e74ce21af3a74f33d846bc2a6473cc<br/>sha256: af3360be8f82309f558f00fda876287ed85ff499337b47517baf2c45c6d8440f|
-|[packages-2024.09-03.src.tgz](../../releases/download/nanoMIPS-2024.09-03/packages-2024.09-03.src.tgz)|[192M]|md5: e91ea45c748a7631aa41ad8aba136677<br/>sha256: c241c9f2771ce9495046dacf133e94499a3680c4c49c8e0ff7bfa6f17419edb6|
-|[python-2024.09-03.src.tgz](../../releases/download/nanoMIPS-2024.09-03/python-2024.09-03.src.tgz)|[22M]|md5: 4372b816c98027050e9c8bb7d2d9b3be<br/>sha256: f58cf539a311126180951ca2cd5c5d67ac26000d6a3ba9738d06fb5bb99d8c28|
+|[binutils-2024.11-02.src.tgz](../../releases/download/nanoMIPS-2024.11-02/binutils-2024.11-02.src.tgz)|[51M]|md5: 69b839aea24c54f0b7e755f31e08b8a8<br/>sha256: 3d28480136aa86d853614686a8005e5b5e26e7317f41fbcecfe4bae3e161e15f|
+|[gdb-2024.11-02.src.tgz](../../releases/download/nanoMIPS-2024.11-02/gdb-2024.11-02.src.tgz)|[51M]|md5: 45e18511a783f60ef4f9f372b0cad551<br/>sha256: 963bcc8dacc71cb19d75392f6a70040d47239ab2d56091cb0dbb3004255e38cf|
+|[gold-2024.11-02.src.tgz](../../releases/download/nanoMIPS-2024.11-02/gold-2024.11-02.src.tgz)|[52M]|md5: f12c43fe0acce1e3e70d2f87f0050098<br/>sha256: ff2b14bae1d9697026c18ec4bf6de6a2116e0ccc1e8447f9424ba74d14809bc9|
+|[newlib-2024.11-02.src.tgz](../../releases/download/nanoMIPS-2024.11-02/newlib-2024.11-02.src.tgz)|[21M]|md5: 52d136b522066068958e030d715314dd<br/>sha256: 409020ee436be5eb20d41d0821acb1ea627d727bb52f139b71acccef403091e7|
+|[gcc-2024.11-02.src.tgz](../../releases/download/nanoMIPS-2024.11-02/gcc-2024.11-02.src.tgz)|[119M]|md5: 44b3ed79080455cb202903417cce4108<br/>sha256: 3013920d67d52d75da91e90215b2bf76440ff8760434300f3dddb1a575c36595|
+|[smallclib-2024.11-02.src.tgz](../../releases/download/nanoMIPS-2024.11-02/smallclib-2024.11-02.src.tgz)|[1M]|md5: 79ad29f7b69df6af459a9879fd6693a2<br/>sha256: 4b8301f25aaa26639168ce3589e80874678e9c4ec1a672e7eedc376e70ca0759|
+|[qemu-2024.11-02.src.tgz](../../releases/download/nanoMIPS-2024.11-02/qemu-2024.11-02.src.tgz)|[90M]|md5: 9499bdcf184ec71647937ff3de4e2673<br/>sha256: 262a07ec48884832323882ffb1d8d2ceee61fc3df2b88b470649779fdc06c6e6|
+|[packages-2024.11-02.src.tgz](../../releases/download/nanoMIPS-2024.11-02/packages-2024.11-02.src.tgz)|[192M]|md5: 733b10eceabb99d4f67eac06e6bfa9c8<br/>sha256: 6ad35493fb18a965775a2fa5f3b9dc3afe36e8a09854a4455103f9a9c7dd4cec|
+|[python-2024.11-02.src.tgz](../../releases/download/nanoMIPS-2024.11-02/python-2024.11-02.src.tgz)|[22M]|md5: 9975608efb1ea6492387f50fe516bbd0<br/>sha256: 2e27d7b9ecf548f7fc640725bd4affe62f3126154d4b34809641ce171a396b8a|
 
 
 <div id="bug-reporting"></div>
