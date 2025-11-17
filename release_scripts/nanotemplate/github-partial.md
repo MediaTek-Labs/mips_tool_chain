@@ -1,5 +1,5 @@
-# [![MTK Logo](https://cdn-www.mediatek.com/icons/mtklogo.svg)](https://www.mediatek.com) &nbsp;&nbsp; nanoMIPS GNU toolchain v2025.04-01
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Published on May 14, 2025
+# [![MTK Logo](https://cdn-www.mediatek.com/icons/mtklogo.svg)](https://www.mediatek.com) &nbsp;&nbsp; nanoMIPS GNU toolchain v2025.09-02
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Published on November 18, 2025
 
 * [Introduction](#introduction)
 * [Release Notes](#release-notes)
@@ -25,8 +25,10 @@ The nanoMIPS Toolchain includes example code, source code, and documentation to 
 #### New Features
 
 #### Bug Fixes
-* Fix linker crash due to BPOSGE32C relaxation
-* Fix GDBsim crash when executing SCWP instruction 
+* Fix crash in gold due to placement of sections groups containing the same section name [Bug 174]
+* Fix mapping of DSP prepend instruction to EXTW - broken since v2024.11-01. There is a typo in the nanoMIPS DSP TRM v0.04. The toolchain now provides the correct mapping, but is inconsistent with the published TRM.
+* Fix qemu emulation of MTHLIP instruction for accumulators $ac1,$ac2,$ac3 [Bug 169]
+* Fix qemu emulation of BPOSGE32C instruction with -ve offsets [Bug 170]
 
 #### Other Changes
   
@@ -68,21 +70,21 @@ The nanoMIPS Toolchain includes example code, source code, and documentation to 
 |Variant  |Size|Checksum|
 |:--------|:---|:-------|
 |**Bare Metal Toolchain**|||
-|[Linux x64](../../releases/download/nanoMIPS-2025.04-01/MediaTek.GNU.Tools.2025.04-01.nanomips-elf_x86_64-pc-linux-gnu.tgz) (.tgz)|[183M]|md5: 82f1f6382b9014728aa4be760f932322<br/>sha256: dc86a0a975c0d9cd8f6ac548153f72a8bb6b2a4cb6549c255277c2f7aaad8d74|
+|[Linux x64](../../releases/download/nanoMIPS-2025.09-02/MediaTek.GNU.Tools.2025.09-02.nanomips-elf_x86_64-pc-linux-gnu.tgz) (.tgz)|[183M]|md5: 40c9b5b50b1037440c73857c8fa4b470<br/>sha256: 6664aa9812afe5872132844e2dae625a3c6a28d0dc37d184020a1e70cedb0d38|
 
 
 #### Source Components
 |Component|Size|Checksum|
 |:--------|:---|:-------|
-|[binutils-2025.04-01.src.tgz](../../releases/download/nanoMIPS-2025.04-01/binutils-2025.04-01.src.tgz)|[51M]|md5: b88b4e19ff8489750006c7837f255a2b<br/>sha256: c5662c4140be2b54a796f26ba9e125cd57e281fdda356bad8e7790d4875a5939|
-|[gdb-2025.04-01.src.tgz](../../releases/download/nanoMIPS-2025.04-01/gdb-2025.04-01.src.tgz)|[51M]|md5: d9f24dfc8d0a0c620805bad7765905ee<br/>sha256: 33fa5784b426639936df1cd68ef263173780571abcf0bd00cfaebf7f9658510a|
-|[gold-2025.04-01.src.tgz](../../releases/download/nanoMIPS-2025.04-01/gold-2025.04-01.src.tgz)|[52M]|md5: 074a9b0ef38aceaca884414454b10c11<br/>sha256: c647da08b6820c0393a5b11f5d209ac55a39ae894361f1d27ef8eaabe5bfc87d|
-|[newlib-2025.04-01.src.tgz](../../releases/download/nanoMIPS-2025.04-01/newlib-2025.04-01.src.tgz)|[21M]|md5: aca79edfb3775a2e16537cd763bd7be3<br/>sha256: cee93c66f11e6d54695c7c02429f29900d08bcc12280831bee8b491e399eaab2|
-|[gcc-2025.04-01.src.tgz](../../releases/download/nanoMIPS-2025.04-01/gcc-2025.04-01.src.tgz)|[119M]|md5: 1a5d8a3614979a2d0221a46f981c9982<br/>sha256: 4211207c031407aaefef333409c2e60871607c2c345b367dc0b1903156f6f96c|
-|[smallclib-2025.04-01.src.tgz](../../releases/download/nanoMIPS-2025.04-01/smallclib-2025.04-01.src.tgz)|[1M]|md5: 1e99d493017e9fecfa93758fa722ff81<br/>sha256: e41dda4fea3b7498c02f6fea8954a88b283d97bccb2011635605ac731f583ebe|
-|[qemu-2025.04-01.src.tgz](../../releases/download/nanoMIPS-2025.04-01/qemu-2025.04-01.src.tgz)|[90M]|md5: 86d950f4e2a1fc8644e1d4007d4a5e19<br/>sha256: 48af1624ce3190e4af3195a72e962dbaaf056b08c45e97bc28a822d1d5d77533|
-|[packages-2025.04-01.src.tgz](../../releases/download/nanoMIPS-2025.04-01/packages-2025.04-01.src.tgz)|[192M]|md5: 93b6177dd74749df0a4b770ef4a8d9cc<br/>sha256: 2210ed7e1c8087cb848dc257e963e157912ec4acb3a2e22a0a92965967cc55ae|
-|[python-2025.04-01.src.tgz](../../releases/download/nanoMIPS-2025.04-01/python-2025.04-01.src.tgz)|[22M]|md5: 1e867602fb5af18a0d33fba1a2cca568<br/>sha256: 4d1470915ff848c4518ea4d9d9e348215e164d8d5903e16e8131f8aebd9fac87|
+|[binutils-2025.09-02.src.tgz](../../releases/download/nanoMIPS-2025.09-02/binutils-2025.09-02.src.tgz)|[51M]|md5: 12cdb0b6dfc62ecd34193e8abff555f8<br/>sha256: c550fd88e9cd7b44187e4cda0c599c83f7eeeeedf183ffada5d318f536bac8e1|
+|[gdb-2025.09-02.src.tgz](../../releases/download/nanoMIPS-2025.09-02/gdb-2025.09-02.src.tgz)|[51M]|md5: 8f0539ff6af6443e4fd6810023081cac<br/>sha256: 72c0176464037c9ea07594e8f2f43a01084763b3d8ab586eb273e3e37815e742|
+|[gold-2025.09-02.src.tgz](../../releases/download/nanoMIPS-2025.09-02/gold-2025.09-02.src.tgz)|[52M]|md5: d41f0604759016d368c6550652a23754<br/>sha256: 6b57a2d9a0d7b79ec115ce44c72cedb55a92cfb5a12bfe74447f82e75d2b43cb|
+|[newlib-2025.09-02.src.tgz](../../releases/download/nanoMIPS-2025.09-02/newlib-2025.09-02.src.tgz)|[21M]|md5: 0a9413b3e0396c0c053304a9da7bc5b1<br/>sha256: 3e980a2fb82ca9e2f0add55b9e42a8d74ae44e13a538d08a7e32556c7c5950d2|
+|[gcc-2025.09-02.src.tgz](../../releases/download/nanoMIPS-2025.09-02/gcc-2025.09-02.src.tgz)|[119M]|md5: c9486540af9fb692ef58d0c5d00da3e0<br/>sha256: f125770a59da69f1f32849a6f5587293e3b364d3ba97a0daa123b09356b580d2|
+|[smallclib-2025.09-02.src.tgz](../../releases/download/nanoMIPS-2025.09-02/smallclib-2025.09-02.src.tgz)|[1M]|md5: 9fa19ba102557ca10af4af2e03cee757<br/>sha256: 73fe092b0163aaf82afa48d2922416d7f10886c421109865148e0f0adb264b1e|
+|[qemu-2025.09-02.src.tgz](../../releases/download/nanoMIPS-2025.09-02/qemu-2025.09-02.src.tgz)|[90M]|md5: 328581484749c7dd2c70ad70bed0fd81<br/>sha256: d82e891dd2237a44c0cc557bb5dcbcc49dcfe69039c072c6d7c8d9d6dab19a16|
+|[packages-2025.09-02.src.tgz](../../releases/download/nanoMIPS-2025.09-02/packages-2025.09-02.src.tgz)|[192M]|md5: 4975afdee39c3dbd5dfa77fe817a9398<br/>sha256: 625469d7a13434f99fed00024c3def7e1579cab57a2ed792812d74b11f3c53ff|
+|[python-2025.09-02.src.tgz](../../releases/download/nanoMIPS-2025.09-02/python-2025.09-02.src.tgz)|[22M]|md5: 5191bbb462b19da53c68d2a5dfbed30c<br/>sha256: a9e6e414832e17e21f22603080a3537305cbef069cb95b21bd4b797ed57094ca|
 
 
 <div id="bug-reporting"></div>
